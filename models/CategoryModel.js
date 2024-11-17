@@ -5,13 +5,10 @@ const CategorySchema = mongoose.Schema ({
     description: {type: String, required: true},
     }, 
     {
-        collection: 'categories'
+        collection: 'categories',
+        timestamps : true
     },
-    {timestamps : true},
 );
 
 const CategoryModel = mongoose.model('categories', CategorySchema);
-
-const play1 = new CategoryModel({'name': 'Dương', 'ddescriptione': "Đà Nẵng"}); play1.save();
-
-module.exports = CategoryModel
+module.exports = CategoryModel;
