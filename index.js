@@ -6,10 +6,23 @@ const CommentModel = require('./models/CommentModel');
 const PostModel = require('./models/PostModel');
 const RoleModel = require('./models/RoleModel');
 const UserModel = require('./models/UserModel');
-
+const CategoryRoutes = require('./routes/CategoryRoutes');
 
 const port = 8000;
 const db = 'mongodb://localhost/BlogDB';
+
+app.set("view engine","ejs");
+app.set("views","./views");
+
+app.use(express.static('assets'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    res.render('app');
+})
+// app.use('/', CategoryRoutes);
+app.use('/category', CategoryRoutes);
 
 const connectDatabase = async () => {
     try {
@@ -21,10 +34,6 @@ const connectDatabase = async () => {
     }
 }
 
-app.use('/', function(req, res) {
-    res.send('Hello world !');
-})
-
 const createDB = () => {
     const newUser = new UserModel({
         name: 'Pham Ba Duong',
@@ -34,23 +43,23 @@ const createDB = () => {
     });
 
     const newRole = new RoleModel({
-        name: 'user',
-        permission: 'read'
+        name: 'user2',
+        permission: 'create'
     });
 
     const newPost = new PostModel({
-        title: 'Tin tức bóng đá',
+        title: 'Lamborghini Veneno',
         image: '',
-        content: 'content',
+        content: 'Lamborghini Veneno là chú bò tót được Neymar yêu thích nhất.',
     });
 
     const newCategory = new CategoryModel({
-        name: 'Duong',
-        description: 'Description'
+        name: 'Supercar',
+        // description: 'Description'
     });
 
     const newComment = new CommentModel({
-        content: 'content',
+        content: 'Nó rất đẹp',
 
     });
 
@@ -73,3 +82,5 @@ connectDatabase().then(() => {
         console.log("Server is running at: " + port);
     })
 }).catch((err) => console.log('Connect database failed:', err));
+
+
