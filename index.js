@@ -1,12 +1,16 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const CategoryModel = require('./models/CategoryModel');
-const CommentModel = require('./models/CommentModel');
-const PostModel = require('./models/PostModel');
-const RoleModel = require('./models/RoleModel');
-const UserModel = require('./models/UserModel');
-const CategoryRoutes = require('./routes/CategoryRoutes');
+const CategoryModel = require('./models/category.model');
+const CommentModel = require('./models/comment.model');
+const PostModel = require('./models/post.model');
+const UserModel = require('./models/user.model');
+const CategoryRoutes = require('./routes/category.routes');
+const PostRoutes = require('./routes/post.routes');
+const AccountRoutes = require('./routes/account.routes');
+const AdminRoutes = require('./routes/admin.routes');
+const BodyParser = require('body-parser');
+const cors = require('cors');
 
 const port = 8000;
 const db = 'mongodb://localhost/BlogDB';
@@ -14,15 +18,21 @@ const db = 'mongodb://localhost/BlogDB';
 app.set("view engine","ejs");
 app.set("views","./views");
 
+app.use(cors('*'))
+
 app.use(express.static('assets'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.render('app');
 })
-// app.use('/', CategoryRoutes);
-app.use('/category', CategoryRoutes);
+
+app.use('/', PostRoutes);
+app.use('/', CategoryRoutes);
+app.use('/', AccountRoutes);
+app.use('/admin', AdminRoutes);
+
 
 const connectDatabase = async () => {
     try {
@@ -82,5 +92,3 @@ connectDatabase().then(() => {
         console.log("Server is running at: " + port);
     })
 }).catch((err) => console.log('Connect database failed:', err));
-
-
