@@ -11,6 +11,9 @@ const AccountRoutes = require('./routes/account.routes');
 const AdminRoutes = require('./routes/admin.routes');
 const BodyParser = require('body-parser');
 const cors = require('cors');
+const fs = require('fs');
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
 
 const port = 8000;
 const db = 'mongodb://localhost/BlogDB';
@@ -86,6 +89,34 @@ const createDB = () => {
 }
 
 // createDB();
+
+app.post('/upload',multipartMiddleware,(req,res)=>{
+    try {
+        fs.readFile(req.files.upload.path, function (err, data) {
+            var newPath = __dirname + '/assets/images/' + req.files.upload.name;
+            fs.writeFile(newPath, data, function (err) {
+                if (err) console.log({err: err});
+                else {
+                    console.log(req.files.upload.originalFilename);
+                //     imgl = '/images/req.files.upload.originalFilename';
+                //     let img = "<script>window.parent.CKEDITOR.tools.callFunction('','"+imgl+"','ok');</script>";
+                //    res.status(201).send(img);
+                 
+                    let fileName = req.files.upload.name;
+                    let url = '/images/'+fileName;                    
+                    let msg = 'Upload successfully';
+                    let funcNum = req.query.CKEditorFuncNum;
+                    console.log({url,msg,funcNum});
+                   
+                    res.status(201).send("<script>window.parent.CKEDITOR.tools.callFunction('"+funcNum+"','"+url+"','"+msg+"');</script>");
+                }
+            });
+        });
+       } catch (error) {
+           console.log(error.message);
+       }
+})
+
 
 connectDatabase().then(() => {
     app.listen(port, function() {

@@ -8,6 +8,10 @@ exports.getManagePost =  (req, res) => {
     res.render('../views/post-admin.ejs');
 }
 
+exports.getManageCreatePostContent = (req, res) => {
+    res.render('../views/post-ckediter.ejs');
+}
+
 exports.getManageCreatePost =  (req, res) => {
     res.render('../views/post-create.ejs');
 }

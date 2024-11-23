@@ -5,6 +5,9 @@ const AdminController = require('../controllers/admin.controller');
 route.get('/', AdminController.getAdmin);
 
 route.get('/manage-post', AdminController.getManagePost);
+
+route.get('/manage-post/create-content', AdminController.getManageCreatePostContent);
+
 route.get('/manage-post/create', AdminController.getManageCreatePost);
 route.post('/manage-post/create', AdminController.postManageCreatePost);
 route.get('/manage-post/edit/:id', AdminController.getManagePutPost);
