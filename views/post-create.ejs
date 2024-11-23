@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Post</title>
+    <link
+      rel="shortcut icon"
+      href="/asset-admin/img/svg/logo.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="/asset-admin/css/style.css" />
+  </head>
+
+  <body>
+    <div class="layer"></div>
+    <!-- ! Body -->
+    <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
+    <div class="page-flex">
+      <!-- ! Sidebar -->
+      <%- include('./partials/sidebar-admin')%>
+      <div class="main-wrapper">
+        <!-- ! Header -->
+        <header><%- include('./partials/header-admin')%></header>
+        <!-- ! Main -->
+        <div class="container">
+          
+          
+          <div class="form-container">
+            <a href="/admin/manage-post">
+              <button class="create-btn">x</button>
+            </a>
+              <form action="/admin/create-post" method="POST" enctype="multipart/form-data">
+                  <div class="form-group">
+                      <label for="title">Post Title</label>
+                      <div class="bnt"></div>
+                      <input type="text" id="title" name="title" required placeholder="Enter title here">
+                  </div>
+      
+                  <div class="form-group">
+                      <label for="content">Post Content</label>
+                      <div class="bnt"></div>
+                      <textarea id="content" name="content" rows="5" required placeholder="Write your content here..."></textarea>
+                  </div>
+      
+                  <div class="form-group">
+                      <label for="image">Post Image</label>
+                      <div class="bnt"></div>
+                      <input type="file" id="image" name="image" accept="image/*">
+                  </div>
+      
+                  <div class="form-group">
+                      <label for="category">Category</label>
+                      <div class="bnt"></div>
+                      <select id="category" name="category" required>
+                          <option value="technology">1</option>
+                          <option value="lifestyle">2</option>
+                          <option value="fashion">3</option>
+                      </select>
+                  </div>
+      
+                  <div class="form-group">
+                      <button type="submit" class="submit-btn">Publish Post</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+        <!-- ! Footer -->
+        <footer class="footer"><%- include('./partials/footer-admin')%></footer>
+      </div>
+    </div>
+    <!-- Chart library -->
+    <script src="/asset-admin/plugins/chart.min.js"></script>
+    <!-- Icons library -->
+    <script src="/asset-admin/plugins/feather.min.js"></script>
+    <!-- Custom scripts -->
+    <script src="/asset-admin/js/script.js"></script>
+  </body>
+</html>

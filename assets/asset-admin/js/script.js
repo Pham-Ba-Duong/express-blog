@@ -65,21 +65,48 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   })();
 
+  // (function () {
+  //   var showCatBtns = document.querySelectorAll('.show-cat-btn');
+
+  //   if (showCatBtns) {
+  //     showCatBtns.forEach(function (showCatBtn) {
+  //       var catSubMenu = showCatBtn.nextElementSibling;
+  //       showCatBtn.addEventListener('click', function (e) {
+  //         e.preventDefault();
+  //         catSubMenu.classList.toggle('visible');
+  //         var catBtnToRotate = document.querySelector('.category__btn');
+  //         catBtnToRotate.classList.toggle('rotated');
+  //       });
+  //     });
+  //   }
+  // })();
+
   (function () {
     var showCatBtns = document.querySelectorAll('.show-cat-btn');
 
     if (showCatBtns) {
-      showCatBtns.forEach(function (showCatBtn) {
-        var catSubMenu = showCatBtn.nextElementSibling;
-        showCatBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          catSubMenu.classList.toggle('visible');
-          var catBtnToRotate = document.querySelector('.category__btn');
-          catBtnToRotate.classList.toggle('rotated');
+        showCatBtns.forEach(function (showCatBtn) {
+            showCatBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Lấy menu con liên quan đến nút được click
+                var catSubMenu = showCatBtn.nextElementSibling;
+
+                // Toggle hiển thị menu con
+                if (catSubMenu) {
+                    catSubMenu.classList.toggle('visible');
+                }
+
+                // Lấy nút mũi tên chỉ trong phạm vi của nút được click
+                var catBtnToRotate = showCatBtn.querySelector('.category__btn');
+                if (catBtnToRotate) {
+                    catBtnToRotate.classList.toggle('rotated');
+                }
+            });
         });
-      });
     }
-  })();
+})();
+
 
   (function () {
     var showMenu = document.querySelector('.lang-switcher');
@@ -102,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   })();
+
 
   (function () {
     var userDdBtnList = document.querySelectorAll('.dropdown-btn');

@@ -907,10 +907,15 @@ body {
 .main-wrapper {
   position: relative;
   width: 100%;
+  flex: 1;
+}
+
+.main-wrapper > div {
+  flex: 1; /* Đẩy footer xuống cuối trang */
 }
 
 .footer {
-  position: absolute;
+  /* position: absolute; */
   bottom: 0;
   left: 0;
   width: 100%;
@@ -1860,10 +1865,6 @@ label {
 
 .new-page-content input {
   padding: 5px 16px;
-}
-
-.users {
-  /* Users Table */
 }
 
 .users-table table {
@@ -3493,6 +3494,24 @@ label {
   background-image: url(../img/svg/Bulk/Menu-toggle-white.svg);
 }
 
+.darkmode .main-wrapper {
+  background-color: #1e1e2f;
+  color: #eff0f6;
+}
+
+.darkmode .form-container {
+  background-color: #2a2a40;
+  border: 1px solid #37374f;
+}
+
+.darkmode .form-group label {
+  color: #eff0f6;
+}
+
+.darkmode .form-group input[type="text"], textarea, select {
+  background-color: rgb(223, 227, 232);
+}
+
 .moon-icon {
   display: none;
 }
@@ -4305,7 +4324,7 @@ label {
 
 /* ------------------------------- */
 .create-btn {
-  margin: 10px 20px 2px;
+  margin: 10px;
   background-color: #0061f7; 
   color: white; 
   border: none;
@@ -4317,7 +4336,7 @@ label {
 }
 
 .create-btn:hover {
-  background-color: #0c2751;
+  background-color: #0056b3;
   transform: scale(1.05); 
 }
 
@@ -4331,18 +4350,16 @@ label {
   transform: scale(0.98); 
 }
 
-/* ------------------------------- */
-/* Sidebar */
+/* -------------Sidebar------------------ */
 .sidebar {
-  width: 250px; /* Sidebar ban đầu */
-  transition: width 0.3s ease; /* Hiệu ứng thu nhỏ sidebar */
+  width: 250px; 
+  transition: width 0.3s ease; 
 }
 
 .sidebar.small {
-  width: 80px; /* Khi sidebar thu nhỏ */
+  width: 80px; 
 }
 
-/* Cấu trúc cho form-container */
 .form-container {
   flex: 1; 
   margin: 20px; 
@@ -4360,31 +4377,101 @@ label {
   height: 100%;
 }
 
-/* Các nhóm form */
 .form-group {
   padding: 13px 10px;
 }
 .bnt {
   height: 5px;
 }
-/* Cấu hình cho label */
+
 label {
   font-weight: bold;
-  margin-bottom: 5px; /* Cách label và input 5px */
+  margin-bottom: 5px; 
 }
 
-/* Cấu hình cho input, textarea và select */
-input[type="text"],
-textarea,
-select {
+/* Css input, textarea và select */
+.form-group input[type="text"]{
   width: 100%;
+  padding: 10px; 
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center; 
+  color: #555; 
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-group input[type="file"]{
+  width: 100%;
+  padding: 10px; 
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center; 
+  color: #555; 
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-group input[type="file"] {
+  width: 40%;
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #fff;
+  display: block; 
+  line-height: 20px; 
+  height: 50px; 
 }
 
-/* Cấu hình cho nút submit */
+.form-group select {
+  width: 20%;
+  padding: 10px; 
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center; 
+  color: #555; 
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 10px; 
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #555; 
+  font-size: 14px;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #007bff; 
+  color: #fff; 
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #0056b3; 
+}
+
+input[type="file"]:focus {
+  outline: none; 
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); 
+}
+
+/* Css nút submit */
 button.submit-btn {
   padding: 10px 20px;
   background-color: #007bff;
