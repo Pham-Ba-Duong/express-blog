@@ -1,12 +1,12 @@
 const categoryModel = require('../models/category.model');
 const PostModel = require('../models/post.model');
 
-exports.getAllPost = async (req, res) => {
+exports.getAllPostApi = async (req, res) => {
     try {
         const posts = await PostModel.find();
         res.json(posts);
       } catch (error) {
-        res.status(500).send("Error :" + err.message);
+        res.status(500).send("Error :" + error.message);
       }
 };
 

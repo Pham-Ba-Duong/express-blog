@@ -90,7 +90,7 @@ const createDB = () => {
 
 // createDB();
 
-app.post('/upload',multipartMiddleware,(req,res)=>{
+app.post('/uploadfile',multipartMiddleware,(req,res)=>{
     try {
         fs.readFile(req.files.upload.path, function (err, data) {
             var newPath = __dirname + '/assets/images/' + req.files.upload.name;
@@ -98,9 +98,6 @@ app.post('/upload',multipartMiddleware,(req,res)=>{
                 if (err) console.log({err: err});
                 else {
                     console.log(req.files.upload.originalFilename);
-                //     imgl = '/images/req.files.upload.originalFilename';
-                //     let img = "<script>window.parent.CKEDITOR.tools.callFunction('','"+imgl+"','ok');</script>";
-                //    res.status(201).send(img);
                  
                     let fileName = req.files.upload.name;
                     let url = '/images/'+fileName;                    

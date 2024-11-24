@@ -261,13 +261,92 @@
                 const response = await fetch(postApi);
                 const posts = await response.json();
 
-                const html = posts.map(
+                const htmlCategoryHome = posts.map(
                     (item) => `
                         <li><a href="#">${item.name} <span class="posts-of-category"></span></a></li>
                     `
                 ).join("");
 
-                document.querySelector(".list-category").innerHTML += html;
+                const htmlCategoryAdmin = posts.map(
+                    (item) => `
+                        <tr>
+                            <td>
+                                <label class="users-table__checkbox">
+                                <input type="checkbox" class="check" />
+                                </label>
+                            </td>
+                            <td>${item.name}</td>
+                            <td>${item.createdAt}</td>
+                            <td>
+                                <span class="p-relative">
+                                <button
+                                    class="dropdown-btn transparent-btn"
+                                    type="button"
+                                    title="More info"
+                                >
+                                    <div class="sr-only">More info</div>
+                                    <i
+                                    data-feather="more-horizontal"
+                                    aria-hidden="true"
+                                    ></i>
+                                </button>
+                                <ul class="users-item-dropdown dropdown">
+                                    <li><a href="##">Edit</a></li>
+                                    <li><a href="##">Delete</a></li>
+                                </ul>
+                                </span>
+                            </td>
+                        </tr>
+                    `
+                ).join("");
+
+                document.querySelector(".list-category").innerHTML += htmlCategoryHome;
+                document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
+            } catch (error) {
+                console.error("Error fetching category data:", error);
+            }
+        }
+
+        const getPopularCategoryDataAdmin = async () => {
+            try {
+                const postApi = "http://localhost:8000/v1/category";
+
+                const response = await fetch(postApi);
+                const posts = await response.json();
+
+                const htmlCategoryAdmin = posts.map(
+                    (item) => `
+                        <tr>
+                            <td>
+                                <label class="users-table__checkbox">
+                                <input type="checkbox" class="check" />
+                                </label>
+                            </td>
+                            <td>${item.name}</td>
+                            <td>${item.createdAt}</td>
+                            <td>
+                                <span class="p-relative">
+                                <button
+                                    class="dropdown-btn transparent-btn"
+                                    type="button"
+                                    title="More info"
+                                >
+                                    <div class="sr-only">More info</div>
+                                    <i
+                                    data-feather="more-horizontal"
+                                    aria-hidden="true"
+                                    ></i>
+                                </button>
+                                <ul class="users-item-dropdown dropdown">
+                                    <li><a href="##">Edit</a></li>
+                                    <li><a href="##">Delete</a></li>
+                                </ul>
+                                </span>
+                            </td>
+                        </tr>
+                    `
+                ).join("");
+                document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
             } catch (error) {
                 console.error("Error fetching category data:", error);
             }

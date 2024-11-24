@@ -10,23 +10,21 @@ exports.getCategoryApi = async (req, res) => {
     const listCategory = await CategoryModel.find();
     res.json(listCategory);
   } catch (error) {
-    console.log(error);
+    res.status(500).send("Error :" + error.message);
   }
 };
 
-// exports.getAllPostItem = (req, res) => {
-//     const posts = PostModel.find();
-//     if (!posts || posts.length === 0) {
-//              console.log('No posts found');
-//              return res.render('partials/post.item.ejs', { posts: [] });
-//          }
-
-//          res.render('partials/post.item.ejs', { posts });
-//          console.log(posts);
-//          console.log('render success')
-
-//     // res.send("day la post item")
-// }
+exports.getPopularCategoryData = async () => {
+  try {
+      const postApi = "http://localhost:8000/v1/category";
+      const response = await fetch(postApi);
+      const posts = await response.json();
+      return posts; 
+  } catch (error) {
+      console.error("Error fetching category data:", error);
+      return []; 
+  }
+};
 
 exports.getCategoryById = (req, res) => {
   const { id } = req.params;
@@ -56,3 +54,4 @@ exports.deleteCategory = (req, res) => {
 exports.postDeleteCategory = (req, res) => {
   console.log("Update category");
 };
+

@@ -11,6 +11,7 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="/asset-admin/css/style.css" />
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> -->
   </head>
 
   <body>
@@ -39,16 +40,16 @@
                   </div>
       
                   <div class="form-group">
-                      <label for="content">Post Content</label>
+                      <label for="txaContent">Post Content</label>
                       <div class="bnt"></div>
-                      <textarea id="content" name="content" rows="5" required placeholder="Write your content here..."></textarea>
+                      <textarea id="txaContent" name="txaContent" rows="5" required placeholder="Write your content here..."></textarea>
                   </div>
       
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                       <label for="image">Post Image</label>
                       <div class="bnt"></div>
                       <input type="file" id="image" name="image" accept="image/*">
-                  </div>
+                  </div> -->
       
                   <div class="form-group">
                       <label for="category">Category</label>
@@ -76,5 +77,19 @@
     <script src="/asset-admin/plugins/feather.min.js"></script>
     <!-- Custom scripts -->
     <script src="/asset-admin/js/script.js"></script>
+    <!-- CKEditer -->
+    <script src="/asset-admin/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('txaContent', {
+            contentsCss: '/path/to/custom.css',
+            uiColor: '#9AB8F3', 
+            extraPlugins: 'filebrowser,uploadimage',
+            filebrowserBrowseUrl: '/browse', 
+            filebrowserUploadMethod: 'form',
+            filebrowserUploadUrl: '/uploadfile', 
+            removePlugins: 'exportpdf',
+            language: 'vi', 
+        });
+    </script>
   </body>
 </html>

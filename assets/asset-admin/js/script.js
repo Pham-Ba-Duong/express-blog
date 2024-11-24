@@ -130,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   })();
 
-
   (function () {
     var userDdBtnList = document.querySelectorAll('.dropdown-btn');
     var userDdList = document.querySelectorAll('.users-item-dropdown');
@@ -298,6 +297,33 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   })();
+
+  (function () {
+    // Lấy tất cả checkbox con
+    var checkers = document.querySelectorAll('.check');
+
+    if (checkers) {
+        // Duyệt qua từng checkbox
+        for (var checker of checkers) {
+            checker.addEventListener('change', function (e) {
+                // Lấy thẻ <tr> chứa checkbox hiện tại
+                var parentRow = e.target.closest('tr');
+
+                if (parentRow) {
+                    // Kiểm tra trạng thái của checkbox và thay đổi class 'active'
+                    if (e.target.checked) {
+                        // Nếu checkbox được chọn, thêm class 'active' vào <tr>
+                        parentRow.classList.add('active');
+                    } else {
+                        // Nếu checkbox bị bỏ chọn, xóa class 'active' khỏi <tr>
+                        parentRow.classList.remove('active');
+                    }
+                }
+            });
+        }
+    }
+})();
+
 
   (function () {
     var checkAll = document.querySelector('.check-all');
