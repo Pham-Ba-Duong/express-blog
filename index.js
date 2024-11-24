@@ -27,6 +27,9 @@ app.use(express.static('assets'));
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.get('/', (req, res) => {
     res.render('app');
 })

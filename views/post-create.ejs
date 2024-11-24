@@ -30,9 +30,9 @@
           
           <div class="form-container">
             <a href="/admin/manage-post">
-              <button class="create-btn">x</button>
+              <button class="button-btn">x</button>
             </a>
-              <form action="/admin/create-post" method="POST" enctype="multipart/form-data">
+              <form action="/admin/manage-post/create" method="POST" enctype="multipart/form-data">
                   <div class="form-group">
                       <label for="title">Post Title</label>
                       <div class="bnt"></div>
@@ -55,9 +55,7 @@
                       <label for="category">Category</label>
                       <div class="bnt"></div>
                       <select id="category" name="category" required>
-                          <option value="technology">1</option>
-                          <option value="lifestyle">2</option>
-                          <option value="fashion">3</option>
+
                       </select>
                   </div>
       
@@ -81,7 +79,6 @@
     <script src="/asset-admin/ckeditor/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('txaContent', {
-            contentsCss: '/path/to/custom.css',
             uiColor: '#9AB8F3', 
             extraPlugins: 'filebrowser,uploadimage',
             filebrowserBrowseUrl: '/browse', 
@@ -91,5 +88,41 @@
             language: 'vi', 
         });
     </script>
+    <!-- Nội dung được Ekedit gửi đi -->
+    <script>
+      document.querySelector("form").addEventListener("submit", function () {
+        for (let instance in CKEDITOR.instances) {
+          CKEDITOR.instances[instance].updateElement();
+        }
+      });
+    </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    getPopularCategoryDataAdmin();
+  });
+
+  const getPopularCategoryDataAdmin = async () => {
+    try {
+      const categoryApi = "http://localhost:8000/v1/category";
+
+      const response = await fetch(categoryApi);
+      const categories = await response.json();
+
+      const htmlCategoryAdmin = categories
+        .map(
+          (item) => `
+                 <option value="${item.name}">${item.name}</option>
+              `
+        )
+        .join("");
+      document.querySelector("#category").innerHTML += htmlCategoryAdmin;
+
+      feather.replace();
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+</script>
   </body>
 </html>

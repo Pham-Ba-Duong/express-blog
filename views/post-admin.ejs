@@ -29,7 +29,7 @@
         <div>
           <h2 class="main-title">Blog Posts</h2>
           <a href="/admin/manage-post/create">
-            <button class="create-btn">New Post</button>
+            <button class="button-btn">New Post</button>
           </a>
           
           <div class="users-table table-wrapper">
@@ -47,44 +47,7 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <label class="users-table__checkbox">
-                      <input type="checkbox" class="check" />
-                      <div class="categories-table-img">
-                        <picture>
-                          <img
-                            src="/asset-admin/img/categories/01.jpg"
-                            alt="category"
-                          />
-                      </picture>
-                      </div>
-                    </label>
-                  </td>
-                  <td>Starting your traveling blog with Vasco</td>
-                  <td><span class="badge-pending">Pending</span></td>
-                  <td>17.04.2021</td>
-                  <td>
-                    <span class="p-relative">
-                      <button
-                        class="dropdown-btn transparent-btn"
-                        type="button"
-                        title="More info"
-                      >
-                        <div class="sr-only">More info</div>
-                        <i
-                          data-feather="more-horizontal"
-                          aria-hidden="true"
-                        ></i>
-                      </button>
-                      <ul class="users-item-dropdown dropdown">
-                        <li><a href="##">Edit</a></li>
-                        <li><a href="##">Delete</a></li>
-                      </ul>
-                    </span>
-                  </td>
-                </tr>
+              <tbody id="list-post-admin">
                 
               </tbody>
             </table>
@@ -102,6 +65,68 @@
     <script src="/asset-admin/plugins/feather.min.js"></script>
     <!-- Custom scripts -->
     <script src="/asset-admin/js/script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          getPopularPostDataAdmin();
+      });
+  
+      const getPopularPostDataAdmin = async () => {
+          try {
+              const postApi = "http://localhost:8000/v1/post";
+
+              const response = await fetch(postApi);
+              const posts = await response.json();
+
+              const htmlPostAdmin = posts.map(
+                  (item) => `
+                      <tr>
+                        <td>
+                          <label class="users-table__checkbox">
+                            <input type="checkbox" class="check" />
+                            <div class="categories-table-img">
+                              <picture>
+                                <img
+                                  src="/asset-admin/img/categories/01.jpg"
+                                  alt="category"
+                                />
+                            </picture>
+                            </div>
+                          </label>
+                        </td>
+                        <td>${item.title}</td>
+                        <td><span class="badge-pending">Pending</span></td>
+                        <td>${item.createdAt}</td>
+                        <td>
+                          <span class="p-relative">
+                            <button
+                              class="dropdown-btn transparent-btn"
+                              type="button"
+                              title="More info"
+                            >
+                              <div class="sr-only">More info</div>
+                              <i
+                                data-feather="more-horizontal"
+                                aria-hidden="true"
+                              ></i>
+                            </button>
+                            <ul class="users-item-dropdown dropdown">
+                              <li><a href="##">Edit</a></li>
+                              <li><a href="##">Delete</a></li>
+                            </ul>
+                          </span>
+                        </td>
+                      </tr>
+                  `
+              ).join("");
+              document.querySelector("#list-post-admin").innerHTML += htmlPostAdmin;
+
+              feather.replace();
+          } catch (error) {
+              console.error("Error fetching category data:", error);
+          }
+      }  
+    </script>
 
   </body>
 </html>

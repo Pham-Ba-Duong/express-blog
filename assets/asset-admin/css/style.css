@@ -815,7 +815,7 @@ img {
   text-decoration: none;
   top: 5px;
   width: auto;
-  z-index: 100000;
+  z-index: 1000;
 }
 
 .skip-link.sr-only {
@@ -847,7 +847,7 @@ img {
   text-decoration: none;
   top: 5px;
   width: auto;
-  z-index: 100000;
+  z-index: 1000;
 }
 
 ::-webkit-scrollbar {
@@ -4323,7 +4323,7 @@ label {
 }
 
 /* ------------------------------- */
-.create-btn {
+.button-btn {
   margin: 10px;
   background-color: #0061f7; 
   color: white; 
@@ -4335,17 +4335,17 @@ label {
   transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
-.create-btn:hover {
+.button-btn:hover {
   background-color: #0056b3;
   transform: scale(1.05); 
 }
 
-.create-btn:focus {
+.button-btn:focus {
   outline: none; 
   box-shadow: 0 0 0 4px rgba(72, 189, 89, 0.5); 
 }
 
-.create-btn:active {
+.button-btn:active {
   background-color: #388e3c; 
   transform: scale(0.98); 
 }
@@ -4438,4 +4438,54 @@ button.submit-btn {
 
 button.submit-btn:hover {
   background-color: #0056b3;
+}
+
+/* Thông báo */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 1100; 
+  display: none; 
+}
+.page-flex {
+  position: relative;
+  z-index: 1; 
+}
+/* .page-flex * {
+  opacity: 0.5;
+  pointer-events: none;
+} */
+.form-container .create-btn{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff; 
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1010; 
+  text-align: center;
+}
+.yes-btn, .no-bt {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.yes-btn {
+  background-color: #28a745;
+  color: white;
+}
+.no-btn {
+  background-color: #dc3545;
+  color: white;
+}
+.yes-btn:hover, .no-btn:hover {
+  opacity: 0.8;
 }

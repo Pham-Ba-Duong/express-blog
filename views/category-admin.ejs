@@ -29,7 +29,7 @@
         <div>
           <h2 class="main-title">Post Category</h2>
           <a href="/admin/manage-category/create">
-            <button class="create-btn">New Category</button>
+            <button class="button-btn">New Category</button>
           </a>
           
           <div class="users-table table-wrapper">
@@ -72,12 +72,12 @@
   
       const getPopularCategoryDataAdmin = async () => {
           try {
-              const postApi = "http://localhost:8000/v1/category";
+              const categoryApi = "http://localhost:8000/v1/category";
 
-              const response = await fetch(postApi);
-              const posts = await response.json();
+              const response = await fetch(categoryApi);
+              const categories = await response.json();
 
-              const htmlCategoryAdmin = posts.map(
+              const htmlCategoryAdmin = categories.map(
                   (item) => `
                       <tr>
                           <td>
@@ -111,7 +111,7 @@
               ).join("");
               document.querySelector("#list-category-admin").innerHTML += htmlCategoryAdmin;
 
-              // feather.replace();
+              feather.replace();
           } catch (error) {
               console.error("Error fetching category data:", error);
           }

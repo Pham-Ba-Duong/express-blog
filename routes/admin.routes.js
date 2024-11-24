@@ -4,10 +4,7 @@ const AdminController = require('../controllers/admin.controller');
 
 route.get('/', AdminController.getAdmin);
 
-route.get('/manage-post', AdminController.getManagePost);
-
-route.get('/manage-post/create-content', AdminController.getManageCreatePostContent);
-
+route.get('/manage-post', AdminController.getManagePosts);
 route.get('/manage-post/create', AdminController.getManageCreatePost);
 route.post('/manage-post/create', AdminController.postManageCreatePost);
 route.get('/manage-post/edit/:id', AdminController.getManagePutPost);
@@ -20,6 +17,9 @@ route.post('/manage-category/create', AdminController.postManageCreateCategory);
 route.get('/manage-category/edit/:id', AdminController.getManagePutCategory);
 route.put('/manage-category/edit/:id', AdminController.putManagePutCategory);
 route.delete('/manage-category/:id', AdminController.deleteManagePutCategory);
+
+route.get('/manage-post/create/create-category-success', AdminController.getCreateCategorySuccess);
+route.get('/manage-category/create/create-post-success', AdminController.getCreatePostSuccess);
 
 route.get('/manage-tags', AdminController.getManageTags);
 
