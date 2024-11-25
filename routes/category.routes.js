@@ -6,7 +6,7 @@ const CategoryController = require('../controllers/category.controller')
 route.get('/category',CategoryController.getCategory);
 
 // http://localhost:8000/category/v1/getCategory
-route.get('/v1/category',CategoryController.getCategoryApi);
+route.get('/v1/category', CategoryController.getCategoryApi);
 
 // route.get('/category',CategoryController.getAllCategory);
 route.get('/category/:id',CategoryController.getCategoryById);

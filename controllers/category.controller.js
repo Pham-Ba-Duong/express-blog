@@ -26,17 +26,49 @@ exports.getPopularCategoryData = async () => {
   }
 };
 
-exports.getCategoryById = (req, res) => {
-  const { id } = req.params;
-  console.log(id);
+exports.getCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await CategoryModel.findById(id);
+    if(!category) {
+      res.status(400).json('Can not find category with id');
+      return;
+    }
+    res.status(200).json(category);
+  } catch(error) {
+    res.status(400).json(error.message);
+  }
 };
 
 exports.createCategory = () => {
   console.log("Get Create category");
 };
 
-exports.postCreateCategory = () => {
-  console.log("Post Create category");
+exports.postCreateCategory = async (req, res) => {
+  const { categoryName } = req.body;
+
+  if (!categoryName) {
+    return res.status(400).send("Category name is required.");
+  }
+  try {
+    const existingCategory = await CategoryModel.findOne({
+      name: categoryName,
+    });
+    if (existingCategory) {
+      return res.render("../views/category-create.ejs", {
+        error: "Category name already exists.",
+        categoryName,
+      });
+    }
+    const newCategory = new CategoryModel({
+      name: categoryName,
+    });
+    await newCategory.save();
+    res.redirect("/admin/manage-post/create/create-category-success");
+  } catch (error) {
+    console.error("Error creating category: ", error);
+    res.status(500).send("Error creating category: " + error.message);
+  }
 };
 
 exports.updateCategory = (req, res) => {

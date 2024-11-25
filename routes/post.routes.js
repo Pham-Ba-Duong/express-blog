@@ -9,7 +9,7 @@ route.get('/v1/postbycategory',PostController.getAllPostByCategoryId);
 route.get('/post/:id',PostController.getPostById);
 
 route.get('/post/create',PostController.createPost);
-route.post('/post/create',PostController.postCreatePost);
+route.post('/v1/post',PostController.postCreatePost);
 
 route.get('/post/update',PostController.updatePost);
 route.put('/post/update/:id',PostController.postUpdatePost);

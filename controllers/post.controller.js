@@ -1,13 +1,13 @@
-const categoryModel = require('../models/category.model');
-const PostModel = require('../models/post.model');
+const categoryModel = require("../models/category.model");
+const PostModel = require("../models/post.model");
 
 exports.getAllPostApi = async (req, res) => {
-    try {
-        const posts = await PostModel.find();
-        res.json(posts);
-      } catch (error) {
-        res.status(500).send("Error :" + error.message);
-      }
+  try {
+    const posts = await PostModel.find();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).send("Error :" + error.message);
+  }
 };
 
 exports.getAllPostByCategoryId = async (req, res) => {
@@ -19,24 +19,44 @@ exports.getAllPostByCategoryId = async (req, res) => {
 
     const category = categoryModel.findById(id);
     const posts = category.find();
-    res.json(posts)
+    res.json(posts);
   } catch (error) {
     res.status(500).send("Error :" + err.message);
   }
-}
+};
 
 exports.getPostById = async (req, res) => {
-    const { id } = req.params;
-    const post = await PostModel.findById(id)
-    res.render('../views/post.details.page.ejs', {post})
+  const { id } = req.params;
+  const post = await PostModel.findById(id);
+  res.render("../views/post.details.page.ejs", { post });
 };
 
 exports.createPost = () => {
   console.log("Get Create Post");
 };
 
-exports.postCreatePost = () => {
-  console.log("Post Create Post");
+exports.postCreatePost = async (req, res) => {
+  const { title, content, category } = req.body;
+  try {
+    const existingPost = await PostModel.findOne({ title, category });
+    if (existingPost) {
+      res.status(400).json("Post is exist");
+      return;
+    }
+    const post = new PostModel({
+      title: title,
+      content: content,
+      category: category,
+    });
+    if (!post) {
+      res.status(400).json("Cannot create post");
+      return;
+    }
+    post.save();
+    res.status(201).json(post);
+  } catch (err) {
+    res.status(500).json("Error occured when trying create post");
+  }
 };
 
 exports.updatePost = (req, res) => {

@@ -14,6 +14,8 @@ const cors = require('cors');
 const fs = require('fs');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart();
+const multer = require('multer');
+const upload = multer();
 
 const port = 8000;
 const db = 'mongodb://localhost/BlogDB';
@@ -27,8 +29,6 @@ app.use(express.static('assets'));
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 app.get('/', (req, res) => {
     res.render('app');

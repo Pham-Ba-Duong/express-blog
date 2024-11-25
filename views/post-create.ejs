@@ -26,43 +26,51 @@
         <header><%- include('./partials/header-admin')%></header>
         <!-- ! Main -->
         <div class="container">
-          
-          
           <div class="form-container">
             <a href="/admin/manage-post">
               <button class="button-btn">x</button>
             </a>
-              <form action="/admin/manage-post/create" method="POST" enctype="multipart/form-data">
-                  <div class="form-group">
-                      <label for="title">Post Title</label>
-                      <div class="bnt"></div>
-                      <input type="text" id="title" name="title" required placeholder="Enter title here">
-                  </div>
-      
-                  <div class="form-group">
-                      <label for="txaContent">Post Content</label>
-                      <div class="bnt"></div>
-                      <textarea id="txaContent" name="txaContent" rows="5" required placeholder="Write your content here..."></textarea>
-                  </div>
-      
-                  <!-- <div class="form-group">
+            <form id="createPostForm" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="title">Post Title</label>
+                <div class="bnt"></div>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  placeholder="Enter title here"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="txaContent">Post Content</label>
+                <div class="bnt"></div>
+                <textarea
+                  id="txaContent"
+                  name="txaContent"
+                  rows="5"
+                  required
+                  placeholder="Write your content here..."
+                ></textarea>
+              </div>
+
+              <!-- <div class="form-group">
                       <label for="image">Post Image</label>
                       <div class="bnt"></div>
                       <input type="file" id="image" name="image" accept="image/*">
                   </div> -->
-      
-                  <div class="form-group">
-                      <label for="category">Category</label>
-                      <div class="bnt"></div>
-                      <select id="category" name="category" required>
 
-                      </select>
-                  </div>
-      
-                  <div class="form-group">
-                      <button type="submit" class="submit-btn">Publish Post</button>
-                  </div>
-              </form>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <div class="bnt"></div>
+                <select id="category" name="category" required></select>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="submit-btn">Publish Post</button>
+              </div>
+            </form>
           </div>
         </div>
         <!-- ! Footer -->
@@ -78,51 +86,87 @@
     <!-- CKEditer -->
     <script src="/asset-admin/ckeditor/ckeditor.js"></script>
     <script>
-        CKEDITOR.replace('txaContent', {
-            uiColor: '#9AB8F3', 
-            extraPlugins: 'filebrowser,uploadimage',
-            filebrowserBrowseUrl: '/browse', 
-            filebrowserUploadMethod: 'form',
-            filebrowserUploadUrl: '/uploadfile', 
-            removePlugins: 'exportpdf',
-            language: 'vi', 
-        });
+      CKEDITOR.replace("txaContent", {
+        uiColor: "#9AB8F3",
+        extraPlugins: "filebrowser,uploadimage",
+        filebrowserBrowseUrl: "/browse",
+        filebrowserUploadMethod: "form",
+        filebrowserUploadUrl: "/uploadfile",
+        removePlugins: "exportpdf",
+        language: "vi",
+      });
     </script>
-    <!-- Nội dung được Ekedit gửi đi -->
-    <script>
+    <!-- <script>
       document.querySelector("form").addEventListener("submit", function () {
         for (let instance in CKEDITOR.instances) {
           CKEDITOR.instances[instance].updateElement();
         }
       });
-    </script>
+    </script> -->
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    getPopularCategoryDataAdmin();
-  });
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        getPopularCategoryDataAdmin();
+      });
 
-  const getPopularCategoryDataAdmin = async () => {
-    try {
-      const categoryApi = "http://localhost:8000/v1/category";
+      const getPopularCategoryDataAdmin = async () => {
+        try {
+          const categoryApi = "http://localhost:8000/v1/category";
 
-      const response = await fetch(categoryApi);
-      const categories = await response.json();
+          const response = await fetch(categoryApi);
+          const categories = await response.json();
 
-      const htmlCategoryAdmin = categories
-        .map(
-          (item) => `
-                 <option value="${item.name}">${item.name}</option>
+          const htmlCategoryAdmin = categories
+            .map(
+              (item) => `
+                 <option value="${item._id}">${item.name}</option>
               `
-        )
-        .join("");
-      document.querySelector("#category").innerHTML += htmlCategoryAdmin;
+            )
+            .join("");
+          document.querySelector("#category").innerHTML += htmlCategoryAdmin;
 
-      feather.replace();
-    } catch (error) {
-      console.error("Error fetching category data:", error);
-    }
-  };
-</script>
+          feather.replace();
+        } catch (error) {
+          console.error("Error fetching category data:", error);
+        }
+      };
+
+      document
+        .getElementById("createPostForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          for (let instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
+          }
+
+          const title = document.getElementById("title").value;
+          const txaContent = document.getElementById("txaContent").value;
+          const category = document.getElementById("category").value;
+
+          try {
+            const response = await fetch("http://localhost:8000/v1/post", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                title: title,
+                content: txaContent,
+                category: category,
+              }),
+            });
+            if (response.status == 400) {
+              alert("Post is exist");
+            } else {
+              const data = await response.json();
+              alert("Create post success");
+              window.location.href = "/admin/manage-post";
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        });
+    </script>
   </body>
 </html>
