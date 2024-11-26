@@ -44,6 +44,18 @@
               </div>
 
               <div class="form-group">
+                <label for="shortContent">Short Content</label>
+                <div class="bnt"></div>
+                <input
+                  type="text"
+                  id="shortContent"
+                  name="shortContent"
+                  required
+                  placeholder="Enter short content here"
+                />
+              </div>
+
+              <div class="form-group">
                 <label for="txaContent">Post Content</label>
                 <div class="bnt"></div>
                 <textarea
@@ -143,6 +155,7 @@
           const title = document.getElementById("title").value;
           const txaContent = document.getElementById("txaContent").value;
           const category = document.getElementById("category").value;
+          const shortContent = document.getElementById("shortContent").value;
 
           try {
             const response = await fetch("http://localhost:8000/v1/post", {
@@ -152,6 +165,7 @@
               },
               body: JSON.stringify({
                 title: title,
+                shortContent: shortContent,
                 content: txaContent,
                 category: category,
               }),

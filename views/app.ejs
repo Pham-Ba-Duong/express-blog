@@ -73,12 +73,12 @@
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-start">
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                        <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
                                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                                         <li class="page-item">
                                             <a class="page-link" href="#">Next</a>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </nav>
                             </div><!-- end col -->
@@ -158,13 +158,14 @@
             getRecentPostData();
             getPopularCategoryData();
         });
-      
+        // Thêm data vào slide bài viết
         const getPostSliderData = async () => {
             try {
                 const postApi = "http://localhost:8000/v1/post";
 
                 const response = await fetch(postApi);
-                const posts = await response.json();
+                const data = await response.json();
+                const posts = data.posts;                
 
                 const html = posts
                     .map((item) => `
@@ -191,12 +192,16 @@
             }
         }     
 
-        const getPostListData = async () => {
+        // Lấy data bài viết với phân trang
+        const getPostListData = async (page = 1) => {
             try {
-                const postApi ="http://localhost:8000/v1/post";
+                const postApi = `http://localhost:8000/v1/post-page?page=${page}`;
 
                 const response = await fetch(postApi);
-                const posts = await response.json();
+                const data = await response.json();
+                const posts = data.posts;
+                const totalPages = data.totalPages;
+                const currentPage = data.currentPage;
 
                 const html = posts.map(
                     (item) => `
@@ -223,18 +228,58 @@
                     `
                 ).join("");
 
-                document.querySelector(".blog-list").innerHTML += html;
+                document.querySelector(".blog-list").innerHTML = html;
+
+                renderPagination(currentPage, totalPages);  
             } catch (error) {
                 console.error("Error fetching category data:", error);
             }
         }
 
-        const getRecentPostData = async () => {
+        // Render phân trang
+        const renderPagination = (currentPage, totalPages) => {
+            const paginationContainer = document.querySelector(".pagination");
+            paginationContainer.innerHTML = "";
+            
+            if (currentPage > 1) {
+                const prevPage = document.createElement("li");
+                prevPage.className = "page-item";
+                prevPage.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>`;
+                paginationContainer.appendChild(prevPage);
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement("li");
+                pageItem.className = `page-item ${i === currentPage ? "active" : ""}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                paginationContainer.appendChild(pageItem);
+            }
+
+            if (currentPage < totalPages) {
+                const nextPage = document.createElement("li");
+                nextPage.className = "page-item";
+                nextPage.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>`;
+                paginationContainer.appendChild(nextPage);
+            }
+
+            document.querySelectorAll(".pagination .page-link").forEach((link) => {
+                link.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    const page = parseInt(event.target.dataset.page);
+                    getPostListData(page);
+                });
+            });
+        };
+
+
+        // Lấy data gần đây
+        const getRecentPostData = async (page = 1) => {
             try {
                 const postApi = "http://localhost:8000/v1/post";
 
                 const response = await fetch(postApi);
-                const posts = await response.json();
+                const data = await response.json();
+                const posts = data.posts;
 
                 const html = posts.map(
                     (item) => `
@@ -254,99 +299,56 @@
             }
         }
         
+
+        // Lấy danh mục
         const getPopularCategoryData = async () => {
             try {
                 const postApi = "http://localhost:8000/v1/category";
 
                 const response = await fetch(postApi);
-                const posts = await response.json();
+                const categories = await response.json();
 
-                const htmlCategoryHome = posts.map(
+                const htmlCategoryHome = categories.map(
                     (item) => `
                         <li><a href="#">${item.name} <span class="posts-of-category"></span></a></li>
                     `
                 ).join("");
 
-                const htmlCategoryAdmin = posts.map(
-                    (item) => `
-                        <tr>
-                            <td>
-                                <label class="users-table__checkbox">
-                                <input type="checkbox" class="check" />
-                                </label>
-                            </td>
-                            <td>${item.name}</td>
-                            <td>${item.createdAt}</td>
-                            <td>
-                                <span class="p-relative">
-                                <button
-                                    class="dropdown-btn transparent-btn"
-                                    type="button"
-                                    title="More info"
-                                >
-                                    <div class="sr-only">More info</div>
-                                    <i
-                                    data-feather="more-horizontal"
-                                    aria-hidden="true"
-                                    ></i>
-                                </button>
-                                <ul class="users-item-dropdown dropdown">
-                                    <li><a href="##">Edit</a></li>
-                                    <li><a href="##">Delete</a></li>
-                                </ul>
-                                </span>
-                            </td>
-                        </tr>
-                    `
-                ).join("");
+                // const htmlCategoryAdmin = categories.map(
+                //     (item) => `
+                //         <tr>
+                //             <td>
+                //                 <label class="users-table__checkbox">
+                //                 <input type="checkbox" class="check" />
+                //                 </label>
+                //             </td>
+                //             <td>${item.name}</td>
+                //             <td>${item.createdAt}</td>
+                //             <td>
+                //                 <span class="p-relative">
+                //                 <button
+                //                     class="dropdown-btn transparent-btn"
+                //                     type="button"
+                //                     title="More info"
+                //                 >
+                //                     <div class="sr-only">More info</div>
+                //                     <i
+                //                     data-feather="more-horizontal"
+                //                     aria-hidden="true"
+                //                     ></i>
+                //                 </button>
+                //                 <ul class="users-item-dropdown dropdown">
+                //                     <li><a href="##">Edit</a></li>
+                //                     <li><a href="##">Delete</a></li>
+                //                 </ul>
+                //                 </span>
+                //             </td>
+                //         </tr>
+                //     `
+                // ).join("");
 
                 document.querySelector(".list-category").innerHTML += htmlCategoryHome;
-                document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
-        }
-
-        const getPopularCategoryDataAdmin = async () => {
-            try {
-                const postApi = "http://localhost:8000/v1/category";
-
-                const response = await fetch(postApi);
-                const posts = await response.json();
-
-                const htmlCategoryAdmin = posts.map(
-                    (item) => `
-                        <tr>
-                            <td>
-                                <label class="users-table__checkbox">
-                                <input type="checkbox" class="check" />
-                                </label>
-                            </td>
-                            <td>${item.name}</td>
-                            <td>${item.createdAt}</td>
-                            <td>
-                                <span class="p-relative">
-                                <button
-                                    class="dropdown-btn transparent-btn"
-                                    type="button"
-                                    title="More info"
-                                >
-                                    <div class="sr-only">More info</div>
-                                    <i
-                                    data-feather="more-horizontal"
-                                    aria-hidden="true"
-                                    ></i>
-                                </button>
-                                <ul class="users-item-dropdown dropdown">
-                                    <li><a href="##">Edit</a></li>
-                                    <li><a href="##">Delete</a></li>
-                                </ul>
-                                </span>
-                            </td>
-                        </tr>
-                    `
-                ).join("");
-                document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
+                // document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
             } catch (error) {
                 console.error("Error fetching category data:", error);
             }
@@ -358,24 +360,24 @@
         // todo 2: handle the function
         // id -> call api(id) -> api get the id and start query to get the post by category id
         // chua xu ly xong
+        // Lấy bài viết trong danh mục
         const getPostsByCategoryId = async (id) => {
-            try {
-                const postApi = `http://localhost:8000/v1/postbycategory/${id}`;
+        try {
+            const postApi = `http://localhost:8000/v1/postbycategory/${id}`;
 
-                const response = await fetch(postApi);
-                const posts = await response.json();
+            const response = await fetch(postApi);
+            const data = await response.json();
+            const posts = data.posts;
 
-                const html = posts.map(
-                    (item) => `
-                        (${item.length})
-                    `
-                ).join("");
+            const html = posts.map(
+                (item) => `(${item.length})`
+            ).join("");
 
-                document.querySelector(".posts-of-category").innerHTML += html;
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
+            document.querySelector(".posts-of-category").innerHTML += html;
+        } catch (error) {
+            console.error("Error fetching category data:", error);
         }
+    }
         
     </script>
     <!-- Core JavaScript

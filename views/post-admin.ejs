@@ -67,8 +67,8 @@
                   <td><span class="badge-pending">Pending</span></td>
                   <td>11</td>
                   <td>
-                   <button class="btn btn-sm btn-warning">Edit</button> | 
-                   <button class="btn btn-sm btn-danger">Delete</button> 
+                   <a href="" id="edit" data-id=${item._id}><button class="btn btn-edit">Edit</button></a> | 
+                   <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
                   </td>
                 </tr> -->
               </tbody>
@@ -97,7 +97,7 @@
     
       const getPopularPostDataAdmin = async () => {
           try {
-              const postApi = "http://localhost:8000/v1/post";
+              const postApi = "http://localhost:8000/v1/post/all";
 
               const response = await fetch(postApi);
               const posts = await response.json();
@@ -122,8 +122,8 @@
                         <td><span class="badge-pending">Pending</span></td>
                         <td>${item.createdAt}</td>
                         <td>
-                          <a id="Edit" class="btn btn-sm btn-warning" type="button" data-id=${item._id} style="cursor: pointer, color: yellow ">Edit</a> | 
-                          <a class="btn btn-sm btn-danger" type="button" data-id=${item._id} style="cursor: 'pointer', color: 'red' ">Delete</a> 
+                            <a href="" id="edit" data-id=${item._id}><button class="btn btn-edit">Edit</button></a> | 
+                            <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
                         </td>
                       </tr>
                   `
@@ -134,8 +134,8 @@
           } catch (error) {
               console.error("Error fetching category data:", error);
           }
-          const btnEdits = document.querySelector("#Edit");
-          btnEdits.addEventListener("click", () => alert(btnEdits.getAttribute('data-id')))       
+          // const btnEdits = document.querySelector("#Edit");
+          // btnEdits.addEventListener("click", () => alert(btnEdits.getAttribute('data-id')))       
       }  
     </script>
 

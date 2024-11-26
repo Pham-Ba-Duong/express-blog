@@ -123,3 +123,4 @@ connectDatabase().then(() => {
         console.log("Server is running at: " + port);
     })
 }).catch((err) => console.log('Connect database failed:', err));
+// MVC Models - Views - Cotroller

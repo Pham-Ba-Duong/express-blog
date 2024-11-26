@@ -93,23 +93,8 @@
                           <td>${item.name}</td>
                           <td>${item.createdAt}</td>
                           <td>
-                              <span class="p-relative">
-                              <button
-                                  class="dropdown-btn transparent-btn"
-                                  type="button"
-                                  title="More info"
-                              >
-                                  <div class="sr-only">More info</div>
-                                  <i
-                                  data-feather="more-horizontal"
-                                  aria-hidden="true"
-                                  ></i>
-                              </button>
-                              <ul class="users-item-dropdown dropdown">
-                                  <li><a href="##">Edit</a></li>
-                                  <li><a href="##">Delete</a></li>
-                              </ul>
-                              </span>
+                            <a href="" id="edit" data-id=${item._id}><button class="btn btn-edit">Edit</button></a> | 
+                            <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
                           </td>
                       </tr>
                   `

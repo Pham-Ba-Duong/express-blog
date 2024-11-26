@@ -1,6 +1,27 @@
 const categoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
+exports.getPostApiPage = async (req, res) => {
+  try {
+    const { page = 1, limit = 3 } = req.query;
+    const posts = await PostModel.find()
+      .skip((page - 1) * limit) 
+      .limit(limit); 
+    const totalPosts = await PostModel.countDocuments(); 
+    // console.log(posts.length);
+    // console.log(totalPosts);
+    
+    res.json({
+      posts,
+      totalPosts,
+      totalPages: Math.ceil(totalPosts / limit), 
+      currentPage: page
+    });
+  } catch (error) {
+    res.status(500).send("Error :" + error.message);
+  }
+};
+
 exports.getAllPostApi = async (req, res) => {
   try {
     const posts = await PostModel.find();
@@ -36,7 +57,7 @@ exports.createPost = () => {
 };
 
 exports.postCreatePost = async (req, res) => {
-  const { title, content, category } = req.body;
+  const { title, shortContent, content, category } = req.body;
   try {
     const existingPost = await PostModel.findOne({ title, category });
     if (existingPost) {
@@ -45,6 +66,7 @@ exports.postCreatePost = async (req, res) => {
     }
     const post = new PostModel({
       title: title,
+      shortContent: shortContent,
       content: content,
       category: category,
     });

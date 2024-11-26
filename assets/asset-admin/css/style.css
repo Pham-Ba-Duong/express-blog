@@ -1965,6 +1965,9 @@ label {
   overflow-x: auto;
   overflow-y: hidden;
   margin-bottom: 20px;
+  max-width: 1200px;
+  margin: auto;
+  
 }
 
 .table-wrapper table {
@@ -4488,4 +4491,23 @@ button.submit-btn:hover {
 }
 .yes-btn:hover, .no-btn:hover {
   opacity: 0.8;
+}
+
+/* Edit-Delete */
+.btn {
+  padding: 5px 10px;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s all ease;
+}
+.btn-edit {
+  background-color: rgb(255, 212, 82);
+}
+.btn-delete{
+  background-color: rgb(255, 60, 60);
+}
+.btn:hover{
+  scale: 1.05;
+  box-shadow: 0 0 0 1px rgba(125, 125, 125, 0.5);
 }
