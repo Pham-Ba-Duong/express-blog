@@ -1,4 +1,5 @@
-const categoryModel = require("../models/category.model");
+const mongoose = require('mongoose'); 
+const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
 exports.getPostApiPage = async (req, res) => {
@@ -33,22 +34,40 @@ exports.getAllPostApi = async (req, res) => {
 
 exports.getAllPostByCategoryId = async (req, res) => {
   try {
-    const { id } = req.body;
-    // category id
-    // get the category
-    // get posts of that category
+    const { id } = req.params;
+    // console.log(`Category ID: ${id}`);
 
-    const category = categoryModel.findById(id);
-    const posts = category.find();
-    res.json(posts);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid category ID format" });
+    }
+
+    const category = await CategoryModel.findById(id);
+    // console.log("Category by id" + category);
+    
+
+    if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+    }
+
+    const posts = await PostModel.find({ category: id });
+    // console.log(posts);
+    
+    res.json({
+      category: category.name, 
+      posts,                   
+    });
   } catch (error) {
-    res.status(500).send("Error :" + err.message);
+      console.error("Error fetching posts:", error.message);
+      res.status(500).send("Error: " + error.message);
   }
 };
 
 exports.getPostById = async (req, res) => {
   const { id } = req.params;
   const post = await PostModel.findById(id);
+  console.log(post);
+  
+  // const createdAt = new Date(item.createdAt).toLocaleDateString();
   res.render("../views/post.details.page.ejs", { post });
 };
 

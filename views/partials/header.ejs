@@ -32,42 +32,21 @@
             <div class="col-lg-4 col-md-6 col-sm-6 hidden-xs-down">
               <div class="topsocial">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/P.B.Duong2K4BMT"
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="Facebook"
                   ><i class="fa fa-facebook"></i
                 ></a>
                 <a
-                  href="#"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Youtube"
-                  ><i class="fa fa-youtube"></i
-                ></a>
-                <a
-                  href="#"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Pinterest"
-                  ><i class="fa fa-pinterest"></i
-                ></a>
-                <a
-                  href="#"
+                  href="https://x.com/PBDuong2K4BMT"
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="Twitter"
                   ><i class="fa fa-twitter"></i
                 ></a>
                 <a
-                  href="#"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Flickr"
-                  ><i class="fa fa-flickr"></i
-                ></a>
-                <a
-                  href="#"
+                  href="https://www.instagram.com/pb.duong_soi/"
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="Instagram"
@@ -114,7 +93,7 @@
             <div class="col-md-12">
               <div class="logo">
                 <a href=""
-                  ><img src="asset-blog/images/version/garden-logo.png" alt=""
+                  ><img src="/asset-blog/images/version/garden-logo.png" alt=""
                 /></a>
               </div>
               <!-- end logo -->
@@ -176,23 +155,22 @@
       try {
         const postApi = "http://localhost:8000/v1/category";
   
-        // Fetch dữ liệu từ API
         const response = await fetch(postApi);
         const categories = await response.json();
+        // console.log(categories);
+        
   
-        // Tạo HTML từ dữ liệu
         const html = categories
           .map(
             (item) => `
               <li class="nav-item">
-                <a class="nav-link color-green-hover" href="/category/${item.id}">
+                <a class="nav-link color-green-hover" href="/category/${item._id}">
                   ${item.name}
                 </a>
               </li>`
           )
           .join("");
   
-        // Chèn HTML vào phần tử navbar-nav
         document.querySelector(".nav-category").innerHTML += html;
       } catch (error) {
         console.error("Error fetching category data:", error);

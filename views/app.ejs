@@ -155,35 +155,35 @@
         document.addEventListener("DOMContentLoaded", function() {
             getPostSliderData();
             getPostListData();
-            getRecentPostData();
+            // getRecentPostData();
             getPopularCategoryData();
         });
         // Thêm data vào slide bài viết
         const getPostSliderData = async () => {
             try {
-                const postApi = "http://localhost:8000/v1/post";
+                const postApi = "http://localhost:8000/v1/post-page";
 
                 const response = await fetch(postApi);
                 const data = await response.json();
                 const posts = data.posts;                
 
-                const html = posts
-                    .map((item) => `
-                        <div class="center-side">
-                            <div class="masonry-box post-media">
-                                <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
-                                <div class="shadoweffect">
-                                    <div class="shadow-desc">
-                                        <div class="blog-meta">
-                                            <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
-                                            <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                            <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
-                                            <small><a href="#" title="">by Amanda</a></small>
+                const html = posts.map(
+                        (item) => `
+                            <div class="center-side">
+                                <div class="masonry-box post-media">
+                                    <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
+                                    <div class="shadoweffect">
+                                        <div class="shadow-desc">
+                                            <div class="blog-meta">
+                                                <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
+                                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
+                                                <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
+                                                <small><a href="#" title="">by Amanda</a></small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     `).join("");
 
                 document.querySelector(".masonry-blog").innerHTML += html;
@@ -204,31 +204,32 @@
                 const currentPage = data.currentPage;
 
                 const html = posts.map(
-                    (item) => `
-                        <div class="blog-box row">
-                            <div class="col-md-4">
-                                <div class="post-media">
-                                    <a href="garden-single.html" title="">
-                                        <img src="/asset-blog/upload/garden_sq_01.jpg" alt="" class="img-fluid">
-                                        <div class="hovereffect"></div>
-                                    </a>
-                                </div><!-- end media -->
-                            </div><!-- end col -->
+                    (item) => {
+                        const createdAt = new Date(item.createdAt).toLocaleDateString(); 
+                        return `
+                            <div class="blog-box row">
+                                <div class="col-md-4">
+                                    <div class="post-media">
+                                        <a href="garden-single.html" title="">
+                                            <img src="/asset-blog/upload/garden_sq_01.jpg" alt="" class="img-fluid">
+                                            <div class="hovereffect"></div>
+                                        </a>
+                                    </div>
+                                </div>
 
-                            <div class="blog-meta big-meta col-md-8">
-                                <span class="bg-aqua"><a href="#" title="">${item.title}</a></span>
-                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                <p>${item.content}</p>
-                                <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
-                                <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
-                                <small><a href="#" title="">by Matilda</a></small>
-                            </div><!-- end meta -->
-                        </div><!-- end blog-box -->
-                        <hr class="invis">
-                    `
-                ).join("");
+                                <div class="blog-meta big-meta col-md-8">
+                                    <span class="bg-aqua"><a href="#" title="">${item.title}</a></span>
+                                    <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
+                                    <p>${item.shortContent}</p>
+                                    <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
+                                    <small><a href="post/${item._id}" title="">${createdAt}</a></small>
+                                </div>
+                            </div>
+                            <hr class="invis">
+                        `
+                }).join("");
 
-                document.querySelector(".blog-list").innerHTML = html;
+                document.querySelector(".blog-list").innerHTML += html;
 
                 renderPagination(currentPage, totalPages);  
             } catch (error) {
@@ -275,13 +276,13 @@
         // Lấy data gần đây
         const getRecentPostData = async (page = 1) => {
             try {
-                const postApi = "http://localhost:8000/v1/post";
+                const postApi = "http://localhost:8000/v1/post/all";
 
                 const response = await fetch(postApi);
                 const data = await response.json();
-                const posts = data.posts;
+                // const posts = data.posts;
 
-                const html = posts.map(
+                const html = data.map(
                     (item) => `
                             <a href="post/${item._id}" class="list-group-item list-group-item-action flex-column align-items-start">
                                 <div class="w-100 justify-content-between">
@@ -361,12 +362,13 @@
         // id -> call api(id) -> api get the id and start query to get the post by category id
         // chua xu ly xong
         // Lấy bài viết trong danh mục
-        const getPostsByCategoryId = async (id) => {
+        const getAllPostsByCategoryId = async (id) => {
         try {
-            const postApi = `http://localhost:8000/v1/postbycategory/${id}`;
+            const postApi = `http://localhost:8000/v1/posts-bycategory/${id}`;
 
             const response = await fetch(postApi);
             const data = await response.json();
+            console.log(data);            
             const posts = data.posts;
 
             const html = posts.map(
@@ -382,10 +384,10 @@
     </script>
     <!-- Core JavaScript
     ================================================== -->
-    <script src="/asset-blog/js/jquery.min.js"></script>
+    <!-- <script src="/asset-blog/js/jquery.min.js"></script> -->
     <script src="/asset-blog/js/tether.min.js"></script>
-    <script src="/asset-blog/js/bootstrap.min.js"></script>
-    <script src="/asset-blog/js/custom.js"></script>
+    <!-- <script src="/asset-blog/js/bootstrap.min.js"></script> -->
+    <!-- <script src="/asset-blog/js/custom.js"></script> -->
 </body>
 
 </html>
