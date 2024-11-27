@@ -142,7 +142,7 @@
                   <td id="category-name-${item._id}">${categoryName}</td>
                   <td>${createdAt}</td>
                   <td>
-                    <a href="" id="edit" data-id="${item._id}"><button class="btn btn-edit">Edit</button></a> | 
+                    <a href="/post/update/${item._id}" id="edit" data-id="${item._id}"><button class="btn btn-edit">Edit</button></a> | 
                     <a href="" id="delete" data-id="${item._id}"><button class="btn btn-delete">Delete</button> </a>
                   </td>
                 </tr>
@@ -151,6 +151,16 @@
           );
 
           document.querySelector("#list-post-admin").innerHTML = htmlPostAdmin;
+
+          // Click update
+          document.querySelectorAll(".btn-edit").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              const postId = e.target.closest("a").getAttribute("data-id");
+              if (postId) {
+                window.location.href = `/post/update/${postId}`;
+              }
+            });
+          });
 
           // Click delete
           document.querySelectorAll(".btn-delete").forEach((button) => {

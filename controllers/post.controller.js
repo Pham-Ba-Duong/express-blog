@@ -120,12 +120,43 @@ exports.postCreatePost = async (req, res) => {
   }
 };
 
-exports.updatePost = (req, res) => {
-  console.log("Display Update Post Form");
+exports.updatePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+    res.render('post-edit.ejs', { post }); 
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving post data');
+  }
 };
 
-exports.postUpdatePost = (req, res) => {
-  console.log("Update Post");
+exports.postUpdatePost = async (req, res) => {
+  try {
+    const { title, content, category, image } = req.body;
+    const postId = req.params.id;
+    
+    const updatedPost = await Post.findByIdAndUpdate(postId, {
+      title,
+      content,
+      category,
+      image,
+    }, { new: true });
+
+    // console.log(updatedPost);
+
+    if (!updatedPost) {
+      return res.status(404).send('Post not found');
+    }
+
+    res.redirect('/admin/manage-post');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating post');
+  }
 };
 
 exports.deletePost = (req, res) => {
@@ -144,4 +175,4 @@ exports.postDeletePost = async (req, res) => {
     console.error("Error deleting post:", error);
     res.status(500).json({ message: "Failed to delete post" });
   }
-};
+}
