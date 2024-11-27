@@ -4,20 +4,27 @@ const PostModel = require("../models/post.model");
 
 exports.getPostApiPage = async (req, res) => {
   try {
-    const { page = 1, limit = 3 } = req.query;
+    const { page = 1, limit =4  } = req.query;
     const posts = await PostModel.find()
       .skip((page - 1) * limit) 
       .limit(limit); 
     const totalPosts = await PostModel.countDocuments(); 
     // console.log(posts.length);
     // console.log(totalPosts);
-    
-    res.json({
+
+    // if (page > totalPages) {
+    //   console.error("Page number exceeds total pages.");
+    //   return;
+    // }
+
+    const response = {
       posts,
       totalPosts,
-      totalPages: Math.ceil(totalPosts / limit), 
+      totalPages: Math.ceil(totalPosts / limit),
       currentPage: page
-    });
+    };
+    // console.log(response.currentPage);
+    res.json(response);
   } catch (error) {
     res.status(500).send("Error :" + error.message);
   }
@@ -65,7 +72,7 @@ exports.getAllPostByCategoryId = async (req, res) => {
 exports.getPostById = async (req, res) => {
   const { id } = req.params;
   const post = await PostModel.findById(id);
-  console.log(post);
+  // console.log(post);
   
   // const createdAt = new Date(item.createdAt).toLocaleDateString();
   res.render("../views/post.details.page.ejs", { post });
@@ -101,7 +108,7 @@ exports.postCreatePost = async (req, res) => {
 };
 
 exports.updatePost = (req, res) => {
-  console.log("Update Post");
+  console.log("Display Update Post Form");
 };
 
 exports.postUpdatePost = (req, res) => {
@@ -109,9 +116,19 @@ exports.postUpdatePost = (req, res) => {
 };
 
 exports.deletePost = (req, res) => {
-  console.log("Delete Post");
+  console.log("Display Delete Post Confirmation");
 };
 
-exports.postDeletePost = (req, res) => {
-  console.log("Update Post");
+exports.postDeletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    
+    const post = await PostModel.findByIdAndDelete(id);
+    
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Failed to delete post" });
+  }
 };

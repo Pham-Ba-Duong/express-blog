@@ -73,11 +73,11 @@
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-start">
-                                        <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
+                                        <!-- <li class="page-item">
                                             <a class="page-link" href="#">Next</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Previous</a>
                                         </li> -->
                                     </ul>
                                 </nav>
@@ -229,7 +229,7 @@
                         `
                 }).join("");
 
-                document.querySelector(".blog-list").innerHTML += html;
+                document.querySelector(".blog-list").innerHTML = html;
 
                 renderPagination(currentPage, totalPages);  
             } catch (error) {
@@ -268,6 +268,9 @@
                     event.preventDefault();
                     const page = parseInt(event.target.dataset.page);
                     getPostListData(page);
+                    // if (!isNaN(page)) { 
+                    //     getPostListDataAdmin(page);
+                    // }
                 });
             });
         };
@@ -276,7 +279,7 @@
         // Lấy data gần đây
         const getRecentPostData = async (page = 1) => {
             try {
-                const postApi = "http://localhost:8000/v1/post/all";
+                const postApi = "http://localhost:8000/v1/posts";
 
                 const response = await fetch(postApi);
                 const data = await response.json();
