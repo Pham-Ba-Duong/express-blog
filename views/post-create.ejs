@@ -18,6 +18,7 @@
     <div class="layer"></div>
     <!-- ! Body -->
     <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
+
     <div class="page-flex">
       <!-- ! Sidebar -->
       <%- include('./partials/sidebar-admin')%>
@@ -30,7 +31,7 @@
             <a href="/admin/manage-post">
               <button class="button-btn">x</button>
             </a>
-            <form id="createPostForm" enctype="multipart/form-data">
+            <form action="http://localhost:8000/v1/posts" id="createPostForm" enctype="multipart/form-data" method="POST">
               <div class="form-group">
                 <label for="title">Post Title</label>
                 <div class="bnt"></div>
@@ -67,11 +68,16 @@
                 ></textarea>
               </div>
 
-              <!-- <div class="form-group">
-                      <label for="image">Post Image</label>
-                      <div class="bnt"></div>
-                      <input type="file" id="image" name="image" accept="image/*">
-                  </div> -->
+              <div class="form-group">
+                <label for="image">Post Image</label>
+                <div class="bnt"></div>
+                <input
+                  type="file"
+                  id="imageFile"
+                  name="imageFile"
+                  accept="image/*"
+                />
+              </div>
 
               <div class="form-group">
                 <label for="category">Category</label>
@@ -108,13 +114,6 @@
         language: "vi",
       });
     </script>
-    <!-- <script>
-      document.querySelector("form").addEventListener("submit", function () {
-        for (let instance in CKEDITOR.instances) {
-          CKEDITOR.instances[instance].updateElement();
-        }
-      });
-    </script> -->
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -152,33 +151,28 @@
             CKEDITOR.instances[instance].updateElement();
           }
 
-          const title = document.getElementById("title").value;
-          const txaContent = document.getElementById("txaContent").value;
-          const category = document.getElementById("category").value;
-          const shortContent = document.getElementById("shortContent").value;
+          const form = document.getElementById("createPostForm");
+          const formData = new FormData(form);
+
+          for (let [key, value] of formData.entries()) {
+            console.log("Lấy về nè:",key, value);
+          }
 
           try {
-            const response = await fetch("http://localhost:8000/v1/post", {
+            const response = await fetch("http://localhost:8000/v1/posts", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                title: title,
-                shortContent: shortContent,
-                content: txaContent,
-                category: category,
-              }),
+              body: formData,
             });
-            if (response.status == 400) {
-              alert("Post is exist");
-            } else {
-              const data = await response.json();
+
+            if (response.ok) {
               alert("Create post success");
               window.location.href = "/admin/manage-post";
+            } else {
+              const errorData = await response.json();
+              alert(`Error: ${errorData.message || "Unknown error occurred"}`);
             }
           } catch (error) {
-            console.log(error);
+            console.error("Error creating post:", error);
           }
         });
     </script>

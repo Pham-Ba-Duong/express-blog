@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const mongoose = require('mongoose');
 const CategoryModel = require('./models/category.model');
 const CommentModel = require('./models/comment.model');
@@ -15,7 +16,7 @@ const fs = require('fs');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart();
 const multer = require('multer');
-const upload = multer();
+// const upload = multer();
 
 const port = 8000;
 const db = 'mongodb://localhost/BlogDB';
@@ -26,6 +27,7 @@ app.set("views","./views");
 app.use(cors('*'))
 
 app.use(express.static('assets'));
+app.use('/images', express.static(path.join(__dirname, 'assets/images')));
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 
@@ -38,7 +40,6 @@ app.use('/', PostRoutes);
 app.use('/', CategoryRoutes);
 app.use('/', AccountRoutes);
 app.use('/admin', AdminRoutes);
-
 
 const connectDatabase = async () => {
     try {
@@ -90,20 +91,19 @@ const createDB = () => {
         console.log(err);
     }
 }
-
 // createDB();
 
 app.post('/uploadfile',multipartMiddleware,(req,res)=>{
     try {
         fs.readFile(req.files.upload.path, function (err, data) {
-            var newPath = __dirname + '/assets/images/' + req.files.upload.name;
+            var newPath = __dirname + '/assets/images/images-content' + req.files.upload.name;
             fs.writeFile(newPath, data, function (err) {
                 if (err) console.log({err: err});
                 else {
                     console.log(req.files.upload.originalFilename);
                  
                     let fileName = req.files.upload.name;
-                    let url = '/images/'+fileName;                    
+                    let url = '/images/images-content/'+fileName;                    
                     let msg = 'Upload successfully';
                     let funcNum = req.query.CKEditorFuncNum;
                     console.log({url,msg,funcNum});

@@ -1,10 +1,11 @@
 const mongoose = require('mongoose'); 
+// const fs = require('fs');
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
 exports.getPostApiPage = async (req, res) => {
   try {
-    const { page = 1, limit =4  } = req.query;
+    const { page, limit } = req.query;
     const posts = await PostModel.find()
       .skip((page - 1) * limit) 
       .limit(limit); 
@@ -83,26 +84,38 @@ exports.createPost = () => {
 };
 
 exports.postCreatePost = async (req, res) => {
-  const { title, shortContent, content, category } = req.body;
+  const { title, shortContent, txaContent , category } = req.body;
+  console.log("Body:", req.body);
+  console.log("File:", req.file); 
   try {
     const existingPost = await PostModel.findOne({ title, category });
     if (existingPost) {
       res.status(400).json("Post is exist");
       return;
+    };
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image file is required!' });
     }
+
+    const imagePath = req.file.path;
+    console.log("Image:", imagePath); 
+
     const post = new PostModel({
       title: title,
       shortContent: shortContent,
-      content: content,
+      content: txaContent,
+      image: imagePath, 
       category: category,
     });
     if (!post) {
       res.status(400).json("Cannot create post");
       return;
     }
-    post.save();
+    await post.save();
     res.status(201).json(post);
   } catch (err) {
+    console.error("Error creating post:", err); 
     res.status(500).json("Error occured when trying create post");
   }
 };

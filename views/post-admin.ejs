@@ -34,11 +34,7 @@
             <table class="posts-table">
               <thead>
                 <tr class="users-table-info">
-                  <th>
-                    <label class="users-table__checkbox ms-20">
-                      <input type="checkbox" class="check-all" />Thumbnail
-                    </label>
-                  </th>
+                  <th>Thumbnail</th>
                   <th>Title</th>
                   <th>Category</th>
                   <th>Date</th>
@@ -103,73 +99,109 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         getPostListDataAdmin();
+        getCategoryById();
       });
 
-      const getPostListDataAdmin = async (page = 1) => {
+      const getPostListDataAdmin = async (page, limit) => {
         try {
           const postApi = `http://localhost:8000/v1/post-page?page=${page}`;
-
           const response = await fetch(postApi);
           const data = await response.json();
           const posts = data.posts;
           const totalPages = data.totalPages;
           const currentPage = data.currentPage;
 
-          // console.log("Posts:", posts);
-          // console.log("Total Pages:", totalPages);
-          // console.log("Current Page:", currentPage);
-
-          const htmlPostAdmin = posts
-            .map((item) => {
+          // Chạy qua các postItem và lấy thông tin category
+          const htmlPostAdmin = await Promise.all(
+            posts.map(async (item) => {
               const createdAt = new Date(item.createdAt).toLocaleDateString();
+              let image = item.image
+                ? item.image.replace("assets\\", "\\")
+                : "";
+
+              let categoryName = "Unknown Category";
+              if (item.category) {
+                categoryName = await getCategoryById(item.category);
+              }
+
               return `
-                      <tr id=trow_${item._id}>
-                        <td>
-                          <label class="users-table__checkbox">
-                            <input type="checkbox" class="check" />
-                            <div class="categories-table-img">
-                              <picture>
-                                <img
-                                  src="/asset-admin/img/categories/01.jpg"
-                                  alt="category"
-                                />
-                            </picture>
-                            </div>
-                          </label>
-                        </td>
-                        <td>${item.title}</td>
-                        <td><span class="badge-pending">Pending</span></td>
-                        <td>${createdAt}</td>
-                        <td>
-                            <a href="" id="edit" data-id=${item._id}><button class="btn btn-edit">Edit</button></a> | 
-                            <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
-                        </td>
-                      </tr>
-                    `;
+                <tr id="trow_${item._id}">
+                  <td>
+                    <label class="users-table__checkbox">
+                      <div class="categories-table-img">
+                        <picture>
+                          <img
+                            src="${image}"
+                            alt="category"
+                          />
+                        </picture>
+                      </div>
+                    </label>
+                  </td>
+                  <td>${item.title}</td>
+                  <td id="category-name-${item._id}">${categoryName}</td>
+                  <td>${createdAt}</td>
+                  <td>
+                    <a href="" id="edit" data-id="${item._id}"><button class="btn btn-edit">Edit</button></a> | 
+                    <a href="" id="delete" data-id="${item._id}"><button class="btn btn-delete">Delete</button> </a>
+                  </td>
+                </tr>
+              `;
             })
-            .join("");
+          );
+
           document.querySelector("#list-post-admin").innerHTML = htmlPostAdmin;
 
-          //Click delete
+          // Click delete
           document.querySelectorAll(".btn-delete").forEach((button) => {
             button.addEventListener("click", async (e) => {
               const postId = e.target.closest("a").getAttribute("data-id");
-              // console.log(postId)
-
               if (!postId) {
                 alert("Invalid post ID.");
                 return;
               }
-              await deletePost(postId); 
+              await deletePost(postId);
             });
           });
 
-          renderPagination(currentPage, totalPages);
+          // renderPagination(currentPage, totalPages);
         } catch (error) {
           console.error("Error fetching category data:", error);
         }
-        // const btnEdits = document.querySelector("#Edit");
-        // btnEdits.addEventListener("click", () => alert(btnEdits.getAttribute('data-id')))
+      };
+
+      // Hàm lấy tên category theo id
+      const getCategoryById = async (categoryId) => {
+        try {
+          if (
+            !categoryId ||
+            typeof categoryId !== "string" ||
+            categoryId.trim() === ""
+          ) {
+            console.error("Invalid categoryId:", categoryId);
+            return "Unknown Category";
+          }
+
+          const postApi = `http://localhost:8000/category/${categoryId}`;
+          const response = await fetch(postApi);
+          console.log(response);
+
+          // Kiểm tra API
+          const text = await response.text();
+          if (text.startsWith("<!DOCTYPE html>")) {
+            throw new Error("API returned HTML instead of JSON");
+          }
+
+          const data = JSON.parse(text);
+          if (data && data.name) {
+            return data.name;
+          } else {
+            return "Unknown Category";
+          }
+        } catch (error) {
+          console.error("Error fetching category:", error);
+          return "Error fetching category";
+        }
       };
 
       //Render phân trang cùng Posts

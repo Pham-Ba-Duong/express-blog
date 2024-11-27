@@ -1,4 +1,5 @@
 const express = require('express');
+const upload = require('../middlewares/upload');
 
 const route = express.Router();
 const PostController = require('../controllers/post.controller');
@@ -9,8 +10,8 @@ route.get('/v1/posts-bycategory/:id',PostController.getAllPostByCategoryId);
 
 route.get('/post/:id',PostController.getPostById);
 
-route.get('/post/create',PostController.createPost);
-route.post('/v1/post',PostController.postCreatePost);
+route.get('/post/create', PostController.createPost);
+route.post('/v1/posts', upload.single('imageFile'), PostController.postCreatePost);
 
 route.get('/post/update/:id',PostController.updatePost);
 route.put('/post/update/:id',PostController.postUpdatePost);
