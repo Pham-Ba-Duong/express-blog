@@ -4,6 +4,8 @@ const route = express.Router();
 
 route.get('/api/v1/comment',CommentController.getAllComment);
 route.post('/api/v1/comment',CommentController.postCreateComment);
+route.post('/api/v1/comment-page',CommentController.getAllCommentsPage);
+
 route.get('/comment/:id',CommentController.getCommentById);
 
 route.get('/comment/create',CommentController.createComment);

@@ -24,7 +24,7 @@
                 <h2 class="widget-title">Search</h2>
                 <form class="form-inline search-form">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search on the site">
+                        <input id="searchInputHome" type="text" class="form-control" placeholder="Search on the site">
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
                 </form>
@@ -100,6 +100,53 @@
             console.error("Error fetching category data:", error);
         }
     }
-        
+      
+    const handleSearchPost = () => {
+          const searchInput = document.getElementById("searchInputHome");
+          searchInput.addEventListener("change", async (e) => {
+            const search = e.target.value;
+            if(search == '') {
+              getPostListDataAdmin();
+            }
+            const postApi = `http://localhost:8000/v1/posts/search/?search=${search}`;
+            const response = await fetch(postApi);
+            const data = await response.json();
+
+            let image = data[0].image
+                  ? data[0].image.replace("assets\\", "\\")
+                  : "";
+            let categoryName = "Unknown Category";
+            if (!data[0].category) {
+              console.warn(`Post with ID ${data[0]._id} has no category.`);
+              return "Unknown Category";
+            } else{
+              categoryName = await getCategoryById(data[0].category);
+            }
+
+            let html = `
+                  <div class="blog-box row">
+                                <div class="col-md-4">
+                                    <div class="post-media">
+                                        <a href="post/${data[0].id}" title="">
+                                            <img src="${image}" alt="" class="img-fluid">
+                                            <div class="hovereffect"></div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="blog-meta big-meta col-md-8">
+                                    <span class="bg-aqua"><a href="post/${data[0]._id}" title="">${data[0].title}</a></span>
+                                    <h4><a href="post/${data[0]._id}" title="">${data[0].title}</a></h4>
+                                    <p>${shortContent}</p>
+                                    <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
+                                    <small><a href="post/${data[0]._id}" title="">${createdAt}</a></small>
+                                </div>
+                            </div>
+                            <hr class="invis">
+            `
+            document.querySelector("#list-post-admin").innerHTML = html;
+           })
+        }
+    
 </script>
 </html>

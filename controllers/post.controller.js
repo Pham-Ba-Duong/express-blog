@@ -3,28 +3,43 @@ const mongoose = require('mongoose');
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
+// exports.getPostByTitle = async (req, res) => {
+//   try {
+//     var postSearch = req.query.search;
+//     const postFound = await PostModel.find({title: postSearch});
+//     if(!postFound) {
+//       res.status(400).json("Can not find post !");
+//     }
+//     res.status(200).json(postFound);
+//   } catch(err) {
+//     res.status(400).json(err.message);
+//   }
+// }
+
 exports.getPostByTitle = async (req, res) => {
   try {
-    var postSearch = req.query.search;
-    const postFound = await PostModel.find({title: postSearch});
-    // include()
-    // contain()
-    // const postFound = await PostModel.filter((item) => item.contain(postSearch))
-    // reduce()
-    // rest (JS ES6)
-    // {...rest, data}
-    if(!postFound) {
-      res.status(400).json("Can not find post !");
+    const postSearch = req.query.search;
+
+    if (!postSearch || postSearch.trim() === '') {
+      return res.status(400).json({ message: 'Search query is empty.' });
     }
+
+    const regex = new RegExp(postSearch, 'i');
+    const postFound = await PostModel.find({ title: { $regex: regex } });
+
+    if (postFound.length === 0) {
+      return res.status(400).json("Cannot find posts.");
+    }
+
     res.status(200).json(postFound);
-  } catch(err) {
-    res.status(400).json(err.message);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
-}
+};
 
 exports.getPostApiPage = async (req, res) => {
   try {
-    const { page = 1, limit = 4 } = req.query;
+    const { page = 1, limit = 6 } = req.query;
     const posts = await PostModel.find()
       .skip((page - 1) * limit) 
       .limit(limit); 

@@ -1674,3 +1674,16 @@ hr.invis3 {
     -o-border-radius: 50%;
     border-radius: 50%
 }
+
+.blog-content > p > img {
+    max-width: 800px;
+}
+.blog-content > p{
+    color: #000000;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+

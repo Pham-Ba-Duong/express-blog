@@ -169,11 +169,14 @@
                         let image = item.image
                             ? item.image.replace("assets\\", "\\")
                             : "";
+                        const shortContent = item.shortContent.length > 120 
+                            ? item.shortContent.slice(0, 120) + '...'
+                            : item.shortContent;
                         return `
                             <div class="blog-box row">
                                 <div class="col-md-4">
                                     <div class="post-media">
-                                        <a href="garden-single.html" title="">
+                                        <a href="post/${item.id}" title="">
                                             <img src="${image}" alt="" class="img-fluid">
                                             <div class="hovereffect"></div>
                                         </a>
@@ -181,9 +184,9 @@
                                 </div>
 
                                 <div class="blog-meta big-meta col-md-8">
-                                    <span class="bg-aqua"><a href="#" title="">${item.title}</a></span>
+                                    <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
                                     <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                    <p>${item.shortContent}</p>
+                                    <p>${shortContent}</p>
                                     <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
                                     <small><a href="post/${item._id}" title="">${createdAt}</a></small>
                                 </div>
@@ -204,26 +207,12 @@
         const renderPagination = (currentPage, totalPages) => {
             const paginationContainer = document.querySelector(".pagination");
             paginationContainer.innerHTML = "";
-            
-            if (currentPage > 1) {
-                const prevPage = document.createElement("li");
-                prevPage.className = "page-item";
-                prevPage.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>`;
-                paginationContainer.appendChild(prevPage);
-            }
 
             for (let i = 1; i <= totalPages; i++) {
                 const pageItem = document.createElement("li");
-                pageItem.className = `page-item ${i === currentPage ? "active" : ""}`;
+                pageItem.className = `page-item ${i === currentPage ? "btnred" : ""}`;
                 pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
                 paginationContainer.appendChild(pageItem);
-            }
-
-            if (currentPage < totalPages) {
-                const nextPage = document.createElement("li");
-                nextPage.className = "page-item";
-                nextPage.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>`;
-                paginationContainer.appendChild(nextPage);
             }
 
             document.querySelectorAll(".pagination .page-link").forEach((link) => {
@@ -231,19 +220,11 @@
                     event.preventDefault();
                     const page = parseInt(event.target.dataset.page);
                     getPostListData(page);
-                    // if (!isNaN(page)) { 
-                    //     getPostListDataAdmin(page);
-                    // }
+                    
                 });
             });
         };
-
-        // get all post by if of category
-        // todo 1: create the function that has 1 arguments is the id of category
-        // todo 2: handle the function
-        // id -> call api(id) -> api get the id and start query to get the post by category id
-        // chua xu ly xong
-        // Lấy bài viết trong danh mục
+    
     </script>
 
     <!-- Core JavaScript

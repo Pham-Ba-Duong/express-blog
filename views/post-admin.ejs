@@ -30,9 +30,18 @@
             <a href="/admin/manage-post/create">
               <button class="button-btn">New Post</button>
             </a>
-          </div>  
+          </div>
           <div class="users-table table-wrapper">
-            <input id="searchInput" type="text" style="float: right; border: 0.6px solid black !important; color: black;" placeholder="Search anything..."/>
+            <input
+              id="searchInput"
+              type="text"
+              style="
+                float: right;
+                border: 0.6px solid black !important;
+                color: black;
+              "
+              placeholder="Search anything..."
+            />
 
             <table class="posts-table">
               <thead>
@@ -106,58 +115,85 @@
         handleSearchPost();
       });
 
+      // Seach post
       const handleSearchPost = () => {
         const searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("change", async (e) => {
+
+        searchInput.addEventListener("keyup", async (e) => {
           const search = e.target.value;
-          if(search == '') {
+
+          if (search.trim() === "") {
             getPostListDataAdmin();
+            return;
           }
-          const postApi = `http://localhost:8000/v1/posts/search/?search=${search}`;
-          const response = await fetch(postApi);
-          const data = await response.json();
 
-          let image = data[0].image
-                ? data[0].image.replace("assets\\", "\\")
-                : "";
+          const postApi = `http://localhost:8000/v1/posts/search?search=${search}`;
+          try {
+            const response = await fetch(postApi);
+            const data = await response.json();
+
+            if (response.ok) {
+              renderPosts(data);
+            }
+          } catch (error) {
+            console.error("Error fetching search results:", error);
+          }
+        });
+      };
+
+      //Render post từ search
+      const renderPosts = (posts) => {
+        const postList = document.getElementById("list-post-admin");
+
+        let html = "";
+        
+        posts.forEach((post) => {
+          const createdAt = new Date(post.createdAt).toLocaleDateString();
+          let image = post.image ? post.image.replace("assets\\", "\\") : "";
+
           let categoryName = "Unknown Category";
-          if (!data[0].category) {
-            console.warn(`Post with ID ${data[0]._id} has no category.`);
-            return "Unknown Category";
-          } else{
-            categoryName = await getCategoryById(data[0].category);
-          }
+              if (!post.category) {
+                console.warn(`Post with ID ${post._id} has no category.`);
+                return "Unknown Category";
+              } else {
+                categoryName = getCategoryById(post.category);
+              }
 
-          let html = `             
-                <tr id="trow_${data[0]._id}">
-                  <td>
-                    <label class="users-table__checkbox">
-                      <div class="categories-table-img">
-                        <picture>
-                          <img
-                            src="${image}"
-                            alt="category"
-                          />
-                        </picture>
-                      </div>
-                    </label>
-                  </td>
-                  <td>${data[0].title}</td>
-                  <td id="category-name-${data[0]._id}">${categoryName}</td>
-                  <td>${data[0].createdAt}</td>
-                  <td>
-                    <a href="/post/update/${data[0]._id}" id="edit" data-id="${data[0]._id}"><button class="btn btn-edit">Edit</button></a> | 
-                    <a href="" id="delete" data-id="${data[0]._id}"><button class="btn btn-delete">Delete</button> </a>
-                  </td>
-                </tr>             
-          `      
-          document.querySelector("#list-post-admin").innerHTML = html;
-          
-     })
-      }
-    
-   
 
+          html += `
+              <tr id="trow_${post._id}">
+                <td>
+                  <label class="users-table__checkbox">
+                    <div class="categories-table-img">
+                      <picture>
+                        <a href="http://localhost:8000/post/${post._id}">
+                          <img src="${image}" alt="category" />
+                        </a>
+                      </picture>
+                    </div>
+                  </label>
+                </td>
+                <td>${post.title}</td>
+                <td id="category-name-${post._id}">${
+                  categoryName || "Unknown Category"
+                  }</td>
+                <td>${createdAt}</td>
+                <td>
+                  <a href="/post/update/${post._id}" id="edit" data-id="${post._id}">
+                    <button class="btn btn-edit">Edit</button>
+                  </a> | 
+                  <a href="" id="delete" data-id="${post._id}">
+                    <button class="btn btn-delete">Delete</button>
+                  </a>
+                </td>
+              </tr>
+            `;
+        });
+
+        postList.innerHTML = html;
+      };
+
+      //Lấy post trả ra admin post all
       const getPostListDataAdmin = async (page, limit) => {
         try {
           const postApi = `http://localhost:8000/v1/posts`;
@@ -179,11 +215,10 @@
               if (!item.category) {
                 console.warn(`Post with ID ${item._id} has no category.`);
                 return "Unknown Category";
-              }else{
+              } else {
                 categoryName = await getCategoryById(item.category);
               }
 
-              
               return `
                 <tr id="trow_${item._id}">
                   <td>
@@ -242,11 +277,11 @@
         }
       };
 
-      // Hàm lấy tên category theo id
+      // Hàm lấy name category theo id
       const getCategoryById = async (categoryId) => {
         try {
-          console.log("Cte",categoryId);
-          
+          console.log("Cte", categoryId);
+
           if (
             !categoryId ||
             typeof categoryId !== "string" ||
@@ -277,49 +312,6 @@
         }
       };
 
-      //Render phân trang cùng Posts
-      const renderPagination = (currentPage, totalPages) => {
-        const paginationContainer = document.querySelector(".pagination");
-        paginationContainer.innerHTML = ""; // Xóa nội dung phân trang cũ trước khi tạo lại
-
-        // Tạo nút "Previous"
-        if (currentPage > 1) {
-          const prevPage = document.createElement("li");
-          prevPage.className = "page-item";
-          prevPage.innerHTML = `<a class="page-link" href="#" data-page="${
-            currentPage - 1
-          }">Previous</a>`;
-          paginationContainer.appendChild(prevPage);
-        }
-
-        // Tạo các nút trang
-        for (let i = 1; i <= totalPages; i++) {
-          const pageItem = document.createElement("li");
-          pageItem.className = `page-item ${i === currentPage ? "active" : ""}`;
-          pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-          paginationContainer.appendChild(pageItem);
-        }
-
-        // Tạo nút "Next"
-        if (currentPage < totalPages) {
-          const nextPage = document.createElement("li");
-          nextPage.className = "page-item";
-          nextPage.innerHTML = `<a class="page-link" href="#" data-page="${
-            currentPage + 1
-          }">Next</a>`;
-          paginationContainer.appendChild(nextPage);
-        }
-
-        // Lắng nghe sự kiện click vào các trang
-        document.querySelectorAll(".pagination .page-item").forEach((link) => {
-          link.addEventListener("click", (event) => {
-            event.preventDefault();
-            const page = parseInt(event.target.dataset.page);
-            getPostListDataAdmin(page);
-          });
-        });
-      };
-
       //Hàm delete post
       const deletePost = async (postId) => {
         try {
@@ -343,7 +335,6 @@
           alert("Error deleting post.");
         }
       };
-    
     </script>
   </body>
 </html>
