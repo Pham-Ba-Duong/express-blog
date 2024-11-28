@@ -1,13 +1,12 @@
+const CommentController = require('../controllers/comment.controller');
 const express = require('express');
-
 const route = express.Router();
-const CommentController = require('../controllers/CommentController')
 
-route.get('/comment',CommentController.getAllComment);
+route.get('/api/v1/comment',CommentController.getAllComment);
+route.post('/api/v1/comment',CommentController.postCreateComment);
 route.get('/comment/:id',CommentController.getCommentById);
 
 route.get('/comment/create',CommentController.createComment);
-route.post('/comment/create',CommentController.postCreateComment);
 
 route.get('/comment/update',CommentController.updateComment);
 route.put('/comment/update/:id',CommentController.postUpdateComment);

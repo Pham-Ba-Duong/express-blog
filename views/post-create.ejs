@@ -151,17 +151,29 @@
             CKEDITOR.instances[instance].updateElement();
           }
 
+          // const title = document.getElementById('title').value;  
+          // const shortContent = document.getElementById('shortContent').value;
+          // const txaContent = document.getElementById('txaContent').value;
+          // const category = document.getElementById('category').value;
+          // const image = document.getElementById('imageFile').toString();
           const form = document.getElementById("createPostForm");
           const formData = new FormData(form);
 
-          for (let [key, value] of formData.entries()) {
-            console.log("Lấy về nè:",key, value);
-          }
+          // for (let [key, value] of formData.entries()) {
+          //   console.log("Lấy về nè:",key, value);
+          // }
 
           try {
             const response = await fetch("http://localhost:8000/v1/posts", {
               method: "POST",
-              body: formData,
+              body: formData
+              // {
+              //   title: title,
+              //   shortContent: shortContent,
+              //   content: txaContent,
+              //   category: category,
+              //   image: image
+              // },
             });
 
             if (response.ok) {

@@ -1,3 +1,5 @@
+const PostModel = require("../models/post.model");
+
 exports.getAllComment = (req, res) => {
     res.render('comment');
 }
@@ -11,8 +13,21 @@ exports.createComment = () => {
     console.log('Get Create Comment')
 }
 
-exports.postCreateComment = () => {
-    console.log('Post Create comment')
+exports.postCreateComment = (req, res) => {
+    try {
+        const { content, user } = req.body;
+        const newComment = PostModel.findOneAndUpdate({_id:req.body._id},{comment:{content:req.body.content,
+             user:req.body.user.name,
+         },
+        })
+     
+        if(newComment) {
+         res.status(201).json(newComment)
+        }
+    }catch(err) {
+        console.log(err);
+    }
+  
 }
 
 exports.updateComment = (req, res) => {

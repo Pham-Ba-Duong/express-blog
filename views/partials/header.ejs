@@ -151,7 +151,7 @@
   </body>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+    const getCategory = async () => {
       try {
         const postApi = "http://localhost:8000/v1/category";
   
@@ -164,7 +164,7 @@
           .map(
             (item) => `
               <li class="nav-item">
-                <a class="nav-link color-green-hover" href="/category/${item._id}">
+                <a class="nav-link color-green-hover" id="${item._id}">
                   ${item.name}
                 </a>
               </li>`
@@ -172,9 +172,18 @@
           .join("");
   
         document.querySelector(".nav-category").innerHTML += html;
+
+        // Thêm sự kiện click vào từng danh mục
+        document.querySelector(".nav-category").addEventListener("click", async (event) => {
+                event.preventDefault();
+                if (event.target.tagName === "A") {
+                const categoryId = event.target.getAttribute("id");
+                await getPostsByCategory(categoryId);
+                }
+            });
       } catch (error) {
         console.error("Error fetching category data:", error);
       }
-    });
+    };
   </script>
 </html>

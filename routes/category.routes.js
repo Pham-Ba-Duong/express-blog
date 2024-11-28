@@ -14,7 +14,7 @@ route.get('/category/:id',CategoryController.getCategoryById);
 route.get('/category/create',CategoryController.createCategory);
 route.post('/category/create',CategoryController.postCreateCategory);
 
-route.get('/category/update',CategoryController.updateCategory);
+route.get('/category/update/:id',CategoryController.getUpdateCategory);
 route.put('/category/update/:id',CategoryController.postUpdateCategory);
 
 route.get('/category/delete',CategoryController.deleteCategory);

@@ -6,6 +6,7 @@ const PostSchema = new mongoose.Schema(
     shortContent: {type: String, required: true},
     image: {type: String, require: true},
     content: { type: String, required: true },
+    comment: { type: mongoose.Types.ObjectId, ref: "comments" },
     category: { type: mongoose.Types.ObjectId, ref: "categories" },
     user: { type: mongoose.Types.ObjectId, ref: "users" },
   },

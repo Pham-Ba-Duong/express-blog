@@ -1,53 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
-    <!-- Basic -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!-- Site Metas -->
     <title>Blog Home</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
-    
-    <!-- Site Icons -->
     <link rel="shortcut icon" href="/asset-blog/images/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="/asset-blog/images/apple-touch-icon.png">
-    
-    <!-- Design fonts -->
     <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet"> 
-
-    <!-- Bootstrap core CSS -->
     <link href="/asset-blog/css/bootstrap.css" rel="stylesheet">
-
-    <!-- FontAwesome Icons core CSS -->
     <link href="/asset-blog/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="/asset-blog/style.css" rel="stylesheet">
-
-    <!-- Responsive styles for this template -->
     <link href="/asset-blog/css/responsive.css" rel="stylesheet">
-
-    <!-- Colors for this template -->
     <link href="/asset-blog/css/colors.css" rel="stylesheet">
-
-    <!-- Version Garden CSS for this template -->
     <link href="/asset-blog/css/version/garden.css" rel="stylesheet">
-
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 <body>
     <header>
-        <%- include('./partials/header'); %>
+        <%- include('./partials/header') %>
     </header>
 
     <div id="wrapper">
@@ -64,8 +36,9 @@
                     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
                         <div class="page-wrapper">
                             <div class="blog-list clearfix">
-                            </div><!-- end blog-list -->
-                        </div><!-- end page-wrapper -->
+                                
+                            </div>
+                        </div>
 
                         <hr class="invis">
 
@@ -73,79 +46,21 @@
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-start">
-                                        <!-- <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Previous</a>
-                                        </li> -->
+                                        
                                     </ul>
                                 </nav>
-                            </div><!-- end col -->
-                        </div><!-- end row -->
-                    </div><!-- end col -->
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                        <div class="sidebar">
-                            <div class="widget">
-                                <h2 class="widget-title">Search</h2>
-                                <form class="form-inline search-form">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Search on the site">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
-                                </form>
-                            </div><!-- end widget -->
-
-                            <div class="widget">
-                                <h2 class="widget-title">Recent Posts</h2>
-                                <div class="blog-list-widget">
-                                    <div class="list-group">                            
-                                    </div>
-                                </div><!-- end blog-list -->
-                            </div><!-- end widget -->
-
-                            <div class="widget">
-                                <h2 class="widget-title">Advertising</h2>
-                                <div class="banner-spot clearfix">
-                                    <div class="banner-img">
-                                        <img src="/asset-blog/upload/banner_04.jpg" alt="" class="img-fluid">
-                                    </div><!-- end banner-img -->
-                                </div><!-- end banner -->
-                            </div><!-- end widget -->
-
-                            <div class="widget">
-                                <h2 class="widget-title">Instagram Feed</h2>
-                                <div class="instagram-wrapper clearfix">
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_01.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_02.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_03.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_04.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_05.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_06.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_07.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_08.jpg" alt="" class="img-fluid"></a>
-                                    <a href="#"><img src="/asset-blog/upload/garden_sq_09.jpg" alt="" class="img-fluid"></a>
-                                </div><!-- end Instagram wrapper -->
-                            </div><!-- end widget -->
-
-                            <div class="widget">
-                                <h2 class="widget-title">Popular Categories</h2>
-                                <div class="link-widget">
-                                    <ul class="list-category">
-                                     
-                                    </ul>
-                                </div><!-- end link-widget -->
-                            </div><!-- end widget -->
-                        </div><!-- end sidebar -->
-                    </div><!-- end col -->
-                </div><!-- end row -->
-            </div><!-- end container -->
+                    <%- include('./partials/sidebar-blog') %>
+                </div>
+            </div>
         </section>
 
         <div class="dmtop">Scroll to Top</div>
         
-    </div><!-- end wrapper -->
+    </div>
 
     <footer>
         <%- include('./partials/footer') %>
@@ -155,9 +70,54 @@
         document.addEventListener("DOMContentLoaded", function() {
             // getPostSliderData();
             getPostListData();
-            // getRecentPostData();
-            getPopularCategoryData();
+            getPostsByCategory();
+            getCategory();
         });
+
+        // Hàm lấy bài viết theo danh mục
+        const getPostsByCategory = async (categoryId) => {
+            try {
+                if (!categoryId) {
+                    console.error("Category ID is missing");
+                    return;
+                }
+
+                const postApi = `http://localhost:8000/v1/posts/${categoryId}`;
+                const response = await fetch(postApi);
+                
+                if (!response.ok) {
+                    throw new Error("Failed to fetch posts");
+                }
+                
+                const posts = await response.json();
+
+                const html =  posts.map(
+                            (post) => `
+                            <div class="center-side">
+                                <div class="masonry-box post-media">
+                                    <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
+                                    <div class="shadoweffect">
+                                        <div class="shadow-desc">
+                                            <div class="blog-meta">
+                                                <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
+                                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
+                                                <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
+                                                <small><a href="#" title="">by Amanda</a></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `
+                        )
+                        .join("");
+
+                document.querySelector(".masonry-blog").innerHTML = html;
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        };
+
         // Thêm data vào slide bài viết
         const getPostSliderData = async () => {
             try {
@@ -206,12 +166,15 @@
                 const html = posts.map(
                     (item) => {
                         const createdAt = new Date(item.createdAt).toLocaleDateString(); 
+                        let image = item.image
+                            ? item.image.replace("assets\\", "\\")
+                            : "";
                         return `
                             <div class="blog-box row">
                                 <div class="col-md-4">
                                     <div class="post-media">
                                         <a href="garden-single.html" title="">
-                                            <img src="/asset-blog/upload/garden_sq_01.jpg" alt="" class="img-fluid">
+                                            <img src="${image}" alt="" class="img-fluid">
                                             <div class="hovereffect"></div>
                                         </a>
                                     </div>
@@ -275,116 +238,14 @@
             });
         };
 
-
-        // Lấy data gần đây
-        const getRecentPostData = async (page = 1) => {
-            try {
-                const postApi = "http://localhost:8000/v1/posts";
-
-                const response = await fetch(postApi);
-                const data = await response.json();
-                // const posts = data.posts;
-
-                const html = data.map(
-                    (item) => `
-                            <a href="post/${item._id}" class="list-group-item list-group-item-action flex-column align-items-start">
-                                <div class="w-100 justify-content-between">
-                                    <img src="/asset-blog/upload/garden_sq_09.jpg" alt="" class="img-fluid float-left">
-                                    <h5 class="mb-1">${item.title}</h5>
-                                    <small>${item.createdAt}</small>
-                                </div>
-                            </a>
-                    `
-                ).join("");
-
-                document.querySelector(".list-group").innerHTML += html;
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
-        }
-        
-
-        // Lấy danh mục
-        const getPopularCategoryData = async () => {
-            try {
-                const postApi = "http://localhost:8000/v1/category";
-
-                const response = await fetch(postApi);
-                const categories = await response.json();
-
-                const htmlCategoryHome = categories.map(
-                    (item) => `
-                        <li><a href="#">${item.name} <span class="posts-of-category"></span></a></li>
-                    `
-                ).join("");
-
-                // const htmlCategoryAdmin = categories.map(
-                //     (item) => `
-                //         <tr>
-                //             <td>
-                //                 <label class="users-table__checkbox">
-                //                 <input type="checkbox" class="check" />
-                //                 </label>
-                //             </td>
-                //             <td>${item.name}</td>
-                //             <td>${item.createdAt}</td>
-                //             <td>
-                //                 <span class="p-relative">
-                //                 <button
-                //                     class="dropdown-btn transparent-btn"
-                //                     type="button"
-                //                     title="More info"
-                //                 >
-                //                     <div class="sr-only">More info</div>
-                //                     <i
-                //                     data-feather="more-horizontal"
-                //                     aria-hidden="true"
-                //                     ></i>
-                //                 </button>
-                //                 <ul class="users-item-dropdown dropdown">
-                //                     <li><a href="##">Edit</a></li>
-                //                     <li><a href="##">Delete</a></li>
-                //                 </ul>
-                //                 </span>
-                //             </td>
-                //         </tr>
-                //     `
-                // ).join("");
-
-                document.querySelector(".list-category").innerHTML += htmlCategoryHome;
-                // document.querySelector(".list-category-admin").innerHTML += htmlCategoryAdmin;
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
-        }
-
-       
         // get all post by if of category
         // todo 1: create the function that has 1 arguments is the id of category
         // todo 2: handle the function
         // id -> call api(id) -> api get the id and start query to get the post by category id
         // chua xu ly xong
         // Lấy bài viết trong danh mục
-        const getAllPostsByCategoryId = async (id) => {
-        try {
-            const postApi = `http://localhost:8000/v1/posts-bycategory/${id}`;
-
-            const response = await fetch(postApi);
-            const data = await response.json();
-            console.log(data);            
-            const posts = data.posts;
-
-            const html = posts.map(
-                (item) => `(${item.length})`
-            ).join("");
-
-            document.querySelector(".posts-of-category").innerHTML += html;
-        } catch (error) {
-            console.error("Error fetching category data:", error);
-        }
-    }
-        
     </script>
+
     <!-- Core JavaScript
     ================================================== -->
     <!-- <script src="/asset-blog/js/jquery.min.js"></script> -->

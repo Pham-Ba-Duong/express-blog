@@ -8,8 +8,8 @@ const PostModel = require('./models/post.model');
 const UserModel = require('./models/user.model');
 const CategoryRoutes = require('./routes/category.routes');
 const PostRoutes = require('./routes/post.routes');
-const AccountRoutes = require('./routes/account.routes');
 const AdminRoutes = require('./routes/admin.routes');
+const commentRouter = require('./routes/comment.routes')
 const BodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
@@ -38,8 +38,8 @@ app.get('/', (req, res) => {
 
 app.use('/', PostRoutes);
 app.use('/', CategoryRoutes);
-app.use('/', AccountRoutes);
 app.use('/admin', AdminRoutes);
+app.use('/', commentRouter)
 
 const connectDatabase = async () => {
     try {

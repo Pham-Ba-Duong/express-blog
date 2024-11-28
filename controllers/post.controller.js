@@ -3,9 +3,28 @@ const mongoose = require('mongoose');
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
+exports.getPostByTitle = async (req, res) => {
+  try {
+    var postSearch = req.query.search;
+    const postFound = await PostModel.find({title: postSearch});
+    // include()
+    // contain()
+    // const postFound = await PostModel.filter((item) => item.contain(postSearch))
+    // reduce()
+    // rest (JS ES6)
+    // {...rest, data}
+    if(!postFound) {
+      res.status(400).json("Can not find post !");
+    }
+    res.status(200).json(postFound);
+  } catch(err) {
+    res.status(400).json(err.message);
+  }
+}
+
 exports.getPostApiPage = async (req, res) => {
   try {
-    const { page, limit } = req.query;
+    const { page = 1, limit = 4 } = req.query;
     const posts = await PostModel.find()
       .skip((page - 1) * limit) 
       .limit(limit); 
@@ -33,7 +52,7 @@ exports.getPostApiPage = async (req, res) => {
 
 exports.getAllPostApi = async (req, res) => {
   try {
-    const posts = await PostModel.find();
+    const posts = await PostModel.find().sort({ createdAt: -1 });
     res.json(posts);
   } catch (error) {
     res.status(500).send("Error :" + error.message);
@@ -42,12 +61,13 @@ exports.getAllPostApi = async (req, res) => {
 
 exports.getAllPostByCategoryId = async (req, res) => {
   try {
-    const { id } = req.params;
-    // console.log(`Category ID: ${id}`);
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid category ID format" });
+        console.error("Invalid category ID format");
+        return;
     }
+    const { id } = req.params;
+    // console.log(`Category ID: ${id}`);
 
     const category = await CategoryModel.findById(id);
     // console.log("Category by id" + category);
@@ -69,24 +89,35 @@ exports.getAllPostByCategoryId = async (req, res) => {
       res.status(500).send("Error: " + error.message);
   }
 };
+// exports.getAllPostByCategoryId  = async (req, res) => {
+//   try {
+//     const { categoryId } = req.params;
+//     const posts = await PostModel.find({ categoryId });
+//     res.json(posts);
+//   } catch (error) {
+//     res.status(500).json({ message: "Lỗi khi lấy bài viết" });
+//   }
+// }
 
 exports.getPostById = async (req, res) => {
   const { id } = req.params;
   const post = await PostModel.findById(id);
-  // console.log(post);
-  
-  // const createdAt = new Date(item.createdAt).toLocaleDateString();
-  res.render("../views/post.details.page.ejs", { post });
+
+  let image = post.image
+  ? post.image.replace("assets\\", "\\")
+  : "";
+
+  res.render("../views/post.details.page.ejs", { post, image });
 };
 
-exports.createPost = () => {
+exports.getCreatePost = () => {
   console.log("Get Create Post");
 };
 
 exports.postCreatePost = async (req, res) => {
   const { title, shortContent, txaContent , category } = req.body;
-  console.log("Body:", req.body);
-  console.log("File:", req.file); 
+  // console.log("Body:", req.body);
+  // console.log("File:", req.file); 
   try {
     const existingPost = await PostModel.findOne({ title, category });
     if (existingPost) {
@@ -120,7 +151,7 @@ exports.postCreatePost = async (req, res) => {
   }
 };
 
-exports.updatePost = async (req, res) => {
+exports.getUpdatePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await PostModel.findById(postId);
@@ -136,23 +167,28 @@ exports.updatePost = async (req, res) => {
 
 exports.postUpdatePost = async (req, res) => {
   try {
-    const { title, content, category, image } = req.body;
-    const postId = req.params.id;
     
-    const updatedPost = await Post.findByIdAndUpdate(postId, {
-      title,
-      content,
-      category,
-      image,
-    }, { new: true });
+    const { title, shortContent, txaContent , category } = req.body;
+    const image = req.file ? req.file.path : null;
+    console.log("Request Body:", req.body);
+    console.log("Request Params:", image);
+    
+    const updatedPost = await PostModel.findByIdAndUpdate(
+      req.params.id, 
+      {
+        title: title,
+        shortContent: shortContent,
+        content: txaContent,
+        category: category,
+        image: image,
+      }, { new: true, runValidators: true });
 
-    // console.log(updatedPost);
-
+    console.log(updatedPost);
+    
     if (!updatedPost) {
       return res.status(404).send('Post not found');
     }
-
-    res.redirect('/admin/manage-post');
+    res.status(200).json(updatedPost)
   } catch (error) {
     console.error(error);
     res.status(500).send('Error updating post');

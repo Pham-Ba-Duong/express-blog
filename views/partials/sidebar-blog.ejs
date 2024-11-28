@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+       <meta charset="utf-8">
+       <meta http-equiv="X-UA-Compatible" content="IE=edge">
+       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+       <title>Blog Home</title>
+       <meta name="keywords" content="">
+       <meta name="description" content="">
+       <meta name="author" content="">
+       <link rel="shortcut icon" href="/asset-blog/images/favicon.ico" type="image/x-icon" />
+       <link rel="apple-touch-icon" href="/asset-blog/images/apple-touch-icon.png">
+       <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet"> 
+       <link href="/asset-blog/css/bootstrap.css" rel="stylesheet">
+       <link href="/asset-blog/css/font-awesome.min.css" rel="stylesheet">
+       <link href="/asset-blog/style.css" rel="stylesheet">
+       <link href="/asset-blog/css/responsive.css" rel="stylesheet">
+       <link href="/asset-blog/css/colors.css" rel="stylesheet">
+       <link href="/asset-blog/css/version/garden.css" rel="stylesheet">
+</head>
+<body>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        <div class="sidebar">
+            <div class="widget">
+                <h2 class="widget-title">Search</h2>
+                <form class="form-inline search-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search on the site">
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+    
+            <div class="widget">
+                <h2 class="widget-title">Advertising</h2>
+                <div class="banner-spot clearfix">
+                    <div class="banner-img">
+                        <img src="/asset-blog/images/nenblog.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h2 class="widget-title">Popular Categories</h2>
+                <div class="link-widget">
+                    <ul class="list-category">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            getPopularCategoryData();
+            // getAllPostsByCategoryId();
+        });
+
+    // Lấy danh mục
+    const getPopularCategoryData = async () => {
+        try {
+            const postApi = "http://localhost:8000/v1/category";
+
+            const response = await fetch(postApi);
+            const categories = await response.json();
+
+            const html = categories.map(
+                (item) => `
+                    <li>
+                        <a id="${item._id}" href="#">${item.name} <span class="posts-of-category"></span></a></li>
+                `
+            ).join("");
+
+            document.querySelector(".list-category").innerHTML += html;
+
+        } catch (error) {
+            console.error("Error fetching category data:", error);
+        }
+    }
+
+    const getAllPostsByCategoryId = async (id) => {
+        try {
+            const postApi = `http://localhost:8000/v1/posts/${id}`;
+            console.log(id);
+            
+
+            const response = await fetch(postApi);
+            const data = await response.json();
+            console.log(data);            
+            const posts = data.posts;
+
+            // const html = posts.map(
+            //     (item) => `(${item.length})`
+            // ).join("");
+
+            // document.querySelector(".posts-of-category").innerHTML += html;
+
+        } catch (error) {
+            console.error("Error fetching category data:", error);
+        }
+    }
+        
+</script>
+</html>

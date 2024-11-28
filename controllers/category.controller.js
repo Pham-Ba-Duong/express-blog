@@ -7,7 +7,7 @@ exports.getCategory = (req, res) => {
 
 exports.getCategoryApi = async (req, res) => {
   try {
-    const listCategory = await CategoryModel.find();
+    const listCategory = await CategoryModel.find().sort({ createdAt: -1 });
     res.json(listCategory);
   } catch (error) {
     res.status(500).send("Error :" + error.message);
@@ -71,19 +71,60 @@ exports.postCreateCategory = async (req, res) => {
   }
 };
 
-exports.updateCategory = (req, res) => {
-  console.log("Update category");
+exports.getUpdateCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const category = await CategoryModel.findById(categoryId);
+    if (!category) {
+      return res.status(404).send('Category not found');
+    }
+    res.render('category-edit.ejs', { category }); 
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving category data');
+  }
 };
 
-exports.postUpdateCategory = (req, res) => {
-  console.log("Update category");
+exports.postUpdateCategory = async (req, res) => {
+  try {
+    
+    const { categoryName } = req.body;
+    // console.log("Request Body:", req.body);
+    
+    const updatedCategory = await CategoryModel.findByIdAndUpdate(
+      req.params.id, 
+      {
+        name: categoryName
+      }, { new: true, runValidators: true });
+
+    console.log(updatedCategory);
+    
+    if (!updatedCategory) {
+      return res.status(404).send('Category not found');
+    }
+    res.status(200).json(updatedCategory)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating category');
+  }
 };
+
 
 exports.deleteCategory = (req, res) => {
   console.log("Delete category");
 };
 
-exports.postDeleteCategory = (req, res) => {
-  console.log("Update category");
+exports.postDeleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    
+    const category = await CategoryModel.findByIdAndDelete(id);
+    
+    res.status(200).json({ message: "Category deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    res.status(500).json({ message: "Failed to delete category" });
+  }
 };
 

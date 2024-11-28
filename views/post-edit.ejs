@@ -33,10 +33,11 @@
             </a>
             <form
               action="/post/update/<%= post._id %>"
-              id="createPostForm"
+              id="updatePostForm"
               enctype="multipart/form-data"
-              method="POST"
+              method="PUT"
             >
+              <input type="hidden" id="postItem" value="<%= post._id %>" />
               <div class="form-group">
                 <label for="title">Post Title</label>
                 <div class="bnt"></div>
@@ -73,7 +74,9 @@
                   value="<%= post.content %>"
                   required
                   placeholder="Write your content here..."
-                ></textarea>
+                >
+<%= post.content %></textarea
+                >
               </div>
 
               <div class="form-group">
@@ -90,7 +93,12 @@
               <div class="form-group">
                 <label for="category">Category</label>
                 <div class="bnt"></div>
-                <select id="category" name="category" value="<%= post.category %>"  required></select>
+                <select
+                  id="category"
+                  name="category"
+                  value="<%= post.category %>"
+                  required
+                ></select>
               </div>
 
               <div class="form-group">
@@ -121,7 +129,7 @@
         removePlugins: "exportpdf",
         language: "vi",
       });
-      
+
       document.addEventListener("DOMContentLoaded", function () {
         getPopularCategoryDataAdmin();
       });
@@ -148,7 +156,37 @@
         }
       };
 
+      document
+        .getElementById("updatePostForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
+          const form = document.getElementById("updatePostForm");
+          const formData = new FormData(form); 
+          console.log(formData);
+
+          const postId = document.getElementById("postItem").value;
+
+          try {
+            const response = await fetch(
+              `http://localhost:8000/post/update/${postId}`,
+              {
+                method: "PUT",
+                body: formData, 
+              }
+            );
+
+            if (response.ok) {
+              alert("Update post success");
+              window.location.href = "/admin/manage-post";
+            } else {
+              const errorData = await response.json();
+              alert(`Error: ${errorData.message || "Unknown error occurred"}`);
+            }
+          } catch (error) {
+            console.error("Error updating post:", error);
+          }
+        });
     </script>
   </body>
 </html>

@@ -24,13 +24,16 @@
         <!-- ! Header -->
         <header><%- include('./partials/header-admin')%></header>
         <!-- ! Main -->
-        <div>
+        <div class="container">
           <h2 class="main-title">Blog Posts</h2>
-          <a href="/admin/manage-post/create">
-            <button class="button-btn">New Post</button>
-          </a>
-
+          <div class="d-flex justify-content-between">
+            <a href="/admin/manage-post/create">
+              <button class="button-btn">New Post</button>
+            </a>
+          </div>  
           <div class="users-table table-wrapper">
+            <input id="searchInput" type="text" style="float: right; border: 0.6px solid black !important; color: black;" placeholder="Search anything..."/>
+
             <table class="posts-table">
               <thead>
                 <tr class="users-table-info">
@@ -100,16 +103,69 @@
       document.addEventListener("DOMContentLoaded", function () {
         getPostListDataAdmin();
         getCategoryById();
+        handleSearchPost();
       });
+
+      const handleSearchPost = () => {
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("change", async (e) => {
+          const search = e.target.value;
+          if(search == '') {
+            getPostListDataAdmin();
+          }
+          const postApi = `http://localhost:8000/v1/posts/search/?search=${search}`;
+          const response = await fetch(postApi);
+          const data = await response.json();
+
+          let image = data[0].image
+                ? data[0].image.replace("assets\\", "\\")
+                : "";
+          let categoryName = "Unknown Category";
+          if (!data[0].category) {
+            console.warn(`Post with ID ${data[0]._id} has no category.`);
+            return "Unknown Category";
+          } else{
+            categoryName = await getCategoryById(data[0].category);
+          }
+
+          let html = `             
+                <tr id="trow_${data[0]._id}">
+                  <td>
+                    <label class="users-table__checkbox">
+                      <div class="categories-table-img">
+                        <picture>
+                          <img
+                            src="${image}"
+                            alt="category"
+                          />
+                        </picture>
+                      </div>
+                    </label>
+                  </td>
+                  <td>${data[0].title}</td>
+                  <td id="category-name-${data[0]._id}">${categoryName}</td>
+                  <td>${data[0].createdAt}</td>
+                  <td>
+                    <a href="/post/update/${data[0]._id}" id="edit" data-id="${data[0]._id}"><button class="btn btn-edit">Edit</button></a> | 
+                    <a href="" id="delete" data-id="${data[0]._id}"><button class="btn btn-delete">Delete</button> </a>
+                  </td>
+                </tr>             
+          `      
+          document.querySelector("#list-post-admin").innerHTML = html;
+          
+     })
+      }
+    
+   
 
       const getPostListDataAdmin = async (page, limit) => {
         try {
-          const postApi = `http://localhost:8000/v1/post-page?page=${page}`;
+          const postApi = `http://localhost:8000/v1/posts`;
           const response = await fetch(postApi);
-          const data = await response.json();
-          const posts = data.posts;
-          const totalPages = data.totalPages;
-          const currentPage = data.currentPage;
+          const posts = await response.json();
+          // const posts = data.posts;
+          // const totalPages = data.totalPages;
+          // const currentPage = data.currentPage;
 
           // Chạy qua các postItem và lấy thông tin category
           const htmlPostAdmin = await Promise.all(
@@ -120,20 +176,26 @@
                 : "";
 
               let categoryName = "Unknown Category";
-              if (item.category) {
+              if (!item.category) {
+                console.warn(`Post with ID ${item._id} has no category.`);
+                return "Unknown Category";
+              }else{
                 categoryName = await getCategoryById(item.category);
               }
 
+              
               return `
                 <tr id="trow_${item._id}">
                   <td>
                     <label class="users-table__checkbox">
                       <div class="categories-table-img">
                         <picture>
-                          <img
-                            src="${image}"
-                            alt="category"
-                          />
+                          <a href="http://localhost:8000/post/${item._id}">  
+                            <img
+                              src="${image}"
+                              alt="category"
+                            />
+                          </a>
                         </picture>
                       </div>
                     </label>
@@ -183,18 +245,19 @@
       // Hàm lấy tên category theo id
       const getCategoryById = async (categoryId) => {
         try {
+          console.log("Cte",categoryId);
+          
           if (
             !categoryId ||
             typeof categoryId !== "string" ||
             categoryId.trim() === ""
           ) {
             console.error("Invalid categoryId:", categoryId);
-            return "Unknown Category";
+            return "Unknown Category1";
           }
 
           const postApi = `http://localhost:8000/category/${categoryId}`;
           const response = await fetch(postApi);
-          console.log(response);
 
           // Kiểm tra API
           const text = await response.text();
@@ -206,7 +269,7 @@
           if (data && data.name) {
             return data.name;
           } else {
-            return "Unknown Category";
+            return "Unknown Category2";
           }
         } catch (error) {
           console.error("Error fetching category:", error);
@@ -280,6 +343,7 @@
           alert("Error deleting post.");
         }
       };
+    
     </script>
   </body>
 </html>
