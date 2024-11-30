@@ -1,9 +1,4 @@
 const CategoryModel = require("../models/category.model");
-// const PostModel = require("../models/post.model");
-
-exports.getCategory = (req, res) => {
-  res.render('category.page.ejs')
-};
 
 exports.getCategoryApi = async (req, res) => {
   try {

@@ -115,10 +115,35 @@
           </nav>
         </div>
       </header>
+
+      <section class="section first-section">
+        <div class="container-fluid">
+            <div class="masonry-blog clearfix">
+                <div class="slider-container-img">
+                    <div class="slider-img">
+                        <img src="/asset-blog/images/slider-1.jpg" alt="Image 1" class="slide-img">
+                        <img src="/asset-blog/images/slider-2.jfif" alt="Image 2" class="slide-img">
+                        <img src="/asset-blog/images/slider-3.jpg" alt="Image 3" class="slide-img">
+                        <img src="/asset-blog/images/slider-4.jpeg" alt="Image 4" class="slide-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     </div>
   </body>
 
   <script>
-    
+    let currentIndex = 0;
+    const slides = document.querySelectorAll('.slide-img');
+    const totalSlides = slides.length;
+
+    function moveToNextSlide() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        const newTransformValue = -currentIndex * 100; 
+        document.querySelector('.slider-img').style.transform = `translateX(${newTransformValue}%)`;
+      }
+
+    setInterval(moveToNextSlide, 2000);
   </script>
 </html>

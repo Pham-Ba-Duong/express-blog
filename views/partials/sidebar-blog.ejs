@@ -54,99 +54,87 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
             getPopularCategoryData();
-            // getAllPostsByCategoryId();
         });
 
-    // Lấy danh mục
+    // Lấy danh mục và tổng số bài viết
     const getPopularCategoryData = async () => {
-        try {
-            const postApi = "http://localhost:8000/v1/category";
+    try {
+        const categoryApi = "http://localhost:8000/v1/category";
+        const response = await fetch(categoryApi);
+        const categories = await response.json();
 
-            const response = await fetch(postApi);
-            const categories = await response.json();
+        // Lấy bài viết từng category
+        const categoryCounts = await Promise.all(
+            categories.map(async (category) => {
+                const countApi = `http://localhost:8000/v1/post-count/${category._id}`; // API lấy số bài viết theo category
+                const countResponse = await fetch(countApi);
+                const countData = await countResponse.json();
+                return { ...category, count: countData.count || 0 };
+            })
+        );
 
-            const html = categories.map(
+        const html = categoryCounts
+            .map(
                 (item) => `
-                    <li>
-                        <a id="${item._id}" href="#">${item.name} <span class="posts-of-category"></span></a></li>
-                `
-            ).join("");
-
-            document.querySelector(".list-category").innerHTML += html;
-
-        } catch (error) {
-            console.error("Error fetching category data:", error);
-        }
-    }
-
-    const getAllPostsByCategoryId = async (id) => {
-        try {
-            const postApi = `http://localhost:8000/v1/posts/${id}`;
-            console.log(id);
-            
-
-            const response = await fetch(postApi);
-            const data = await response.json();
-            console.log(data);            
-            const posts = data.posts;
-
-            // const html = posts.map(
-            //     (item) => `(${item.length})`
-            // ).join("");
-
-            // document.querySelector(".posts-of-category").innerHTML += html;
-
-        } catch (error) {
-            console.error("Error fetching category data:", error);
-        }
-    }
-      
-    const handleSearchPost = () => {
-          const searchInput = document.getElementById("searchInputHome");
-          searchInput.addEventListener("change", async (e) => {
-            const search = e.target.value;
-            if(search == '') {
-              getPostListDataAdmin();
-            }
-            const postApi = `http://localhost:8000/v1/posts/search/?search=${search}`;
-            const response = await fetch(postApi);
-            const data = await response.json();
-
-            let image = data[0].image
-                  ? data[0].image.replace("assets\\", "\\")
-                  : "";
-            let categoryName = "Unknown Category";
-            if (!data[0].category) {
-              console.warn(`Post with ID ${data[0]._id} has no category.`);
-              return "Unknown Category";
-            } else{
-              categoryName = await getCategoryById(data[0].category);
-            }
-
-            let html = `
-                  <div class="blog-box row">
-                                <div class="col-md-4">
-                                    <div class="post-media">
-                                        <a href="post/${data[0].id}" title="">
-                                            <img src="${image}" alt="" class="img-fluid">
-                                            <div class="hovereffect"></div>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="blog-meta big-meta col-md-8">
-                                    <span class="bg-aqua"><a href="post/${data[0]._id}" title="">${data[0].title}</a></span>
-                                    <h4><a href="post/${data[0]._id}" title="">${data[0].title}</a></h4>
-                                    <p>${shortContent}</p>
-                                    <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
-                                    <small><a href="post/${data[0]._id}" title="">${createdAt}</a></small>
-                                </div>
-                            </div>
-                            <hr class="invis">
+                <li>
+                    <a id="${item._id}" href="#">${item.name} <span class="posts-of-category">(${item.count})</span></a>
+                </li>
             `
-            document.querySelector("#list-post-admin").innerHTML = html;
-           })
-        }
+            )
+            .join("");
+
+        document.querySelector(".list-category").innerHTML = html;
+    } catch (error) {
+        console.error("Error fetching category data:", error);
+    }
+};
+
+    // const handleSearchPost = () => {
+    //       const searchInput = document.getElementById("searchInputHome");
+    //       searchInput.addEventListener("change", async (e) => {
+    //         const search = e.target.value;
+    //         if(search == '') {
+    //           getPostListDataAdmin();
+    //         }
+    //         const postApi = `http://localhost:8000/v1/posts/search/?search=${search}`;
+    //         const response = await fetch(postApi);
+    //         const data = await response.json();
+
+    //         let image = data[0].image
+    //               ? data[0].image.replace("assets\\", "\\")
+    //               : "";
+    //         let categoryName = "Unknown Category";
+    //         if (!data[0].category) {
+    //           console.warn(`Post with ID ${data[0]._id} has no category.`);
+    //           return "Unknown Category";
+    //         } else{
+    //           categoryName = await getCategoryById(data[0].category);
+    //         }
+
+    //         let html = `
+    //               <div class="blog-box row">
+    //                             <div class="col-md-4">
+    //                                 <div class="post-media">
+    //                                     <a href="post/${data[0].id}" title="">
+    //                                         <img src="${image}" alt="" class="img-fluid">
+    //                                         <div class="hovereffect"></div>
+    //                                     </a>
+    //                                 </div>
+    //                             </div>
+
+    //                             <div class="blog-meta big-meta col-md-8">
+    //                                 <span class="bg-aqua"><a href="post/${data[0]._id}" title="">${data[0].title}</a></span>
+    //                                 <h4><a href="post/${data[0]._id}" title="">${data[0].title}</a></h4>
+    //                                 <p>${shortContent}</p>
+    //                                 <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
+    //                                 <small><a href="post/${data[0]._id}" title="">${createdAt}</a></small>
+    //                             </div>
+    //                         </div>
+    //                         <hr class="invis">
+    //         `
+    //         document.querySelector("#list-post-admin").innerHTML = html;
+    //        })
+    //     }
     
 </script>
 </html>

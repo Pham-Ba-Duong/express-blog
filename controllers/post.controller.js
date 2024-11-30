@@ -1,22 +1,40 @@
 const mongoose = require('mongoose'); 
-// const fs = require('fs');
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
-// exports.getPostByTitle = async (req, res) => {
-//   try {
-//     var postSearch = req.query.search;
-//     const postFound = await PostModel.find({title: postSearch});
-//     if(!postFound) {
-//       res.status(400).json("Can not find post !");
-//     }
-//     res.status(200).json(postFound);
-//   } catch(err) {
-//     res.status(400).json(err.message);
-//   }
-// }
+exports.getPostsApi = async (req, res) => {
+  try {
+    const posts = await PostModel.find().sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).send("Error :" + error.message);
+  }
+};
 
-exports.getPostByTitle = async (req, res) => {
+exports.getPostsApiPage = async (req, res) => {
+  try {
+    const { page = 1, limit = 6 } = req.query;
+    const posts = await PostModel.find()
+      .skip((page - 1) * limit) 
+      .limit(limit); 
+    const totalPosts = await PostModel.countDocuments(); 
+    // console.log(posts.length);
+    // console.log(totalPosts);
+
+    const response = {
+      posts,
+      totalPosts,
+      totalPages: Math.ceil(totalPosts / limit),
+      currentPage: page
+    };
+    // console.log(response.currentPage);
+    res.json(response);
+  } catch (error) {
+    res.status(500).send("Error :" + error.message);
+  }
+};
+
+exports.getPostsByTitle = async (req, res) => {
   try {
     const postSearch = req.query.search;
 
@@ -37,65 +55,6 @@ exports.getPostByTitle = async (req, res) => {
   }
 };
 
-exports.getPostApiPage = async (req, res) => {
-  try {
-    const { page = 1, limit = 6 } = req.query;
-    const posts = await PostModel.find()
-      .skip((page - 1) * limit) 
-      .limit(limit); 
-    const totalPosts = await PostModel.countDocuments(); 
-    // console.log(posts.length);
-    // console.log(totalPosts);
-
-    // if (page > totalPages) {
-    //   console.error("Page number exceeds total pages.");
-    //   return;
-    // }
-
-    const response = {
-      posts,
-      totalPosts,
-      totalPages: Math.ceil(totalPosts / limit),
-      currentPage: page
-    };
-    // console.log(response.currentPage);
-    res.json(response);
-  } catch (error) {
-    res.status(500).send("Error :" + error.message);
-  }
-};
-
-exports.getAllPostApi = async (req, res) => {
-  try {
-    const posts = await PostModel.find().sort({ createdAt: -1 });
-    res.json(posts);
-  } catch (error) {
-    res.status(500).send("Error :" + error.message);
-  }
-};
-
-exports.getAllPostByCategoryId = async (req, res) => {
-  const { categoryId } = req.params; 
-  try {
-    const posts = await PostModel.find({ category: categoryId });
-    if (!posts.length) {
-      return res.status(404).json({ message: 'No posts found for this category' });
-    }
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching posts for this category' });
-  }
-};
-// exports.getAllPostByCategoryId  = async (req, res) => {
-//   try {
-//     const { categoryId } = req.params;
-//     const posts = await PostModel.find({ categoryId });
-//     res.json(posts);
-//   } catch (error) {
-//     res.status(500).json({ message: "Lỗi khi lấy bài viết" });
-//   }
-// }
-
 exports.getPostById = async (req, res) => {
   const { id } = req.params;
   const post = await PostModel.findById(id);
@@ -107,8 +66,27 @@ exports.getPostById = async (req, res) => {
   res.render("../views/post.details.page.ejs", { post, image });
 };
 
-exports.getCreatePost = () => {
-  console.log("Get Create Post");
+exports.getPostsByCategoryId = async (req, res) => {
+  const { categoryId } = req.params; 
+  try {
+    const posts = await PostModel.find({ category: categoryId });
+    if (!posts.length) {
+      return res.status(404).json({ message: 'No posts found for this category' });
+    }
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching posts for this category' });
+  }
+};
+
+exports.getPostCountByCategoryId = async (req, res) => {
+  const { categoryId } = req.params;
+  try {
+    const count = await PostModel.countDocuments({ category: categoryId });
+    res.json({ categoryId, count });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching post count for this category' });
+  }
 };
 
 exports.postCreatePost = async (req, res) => {
@@ -190,10 +168,6 @@ exports.postUpdatePost = async (req, res) => {
     console.error(error);
     res.status(500).send('Error updating post');
   }
-};
-
-exports.deletePost = (req, res) => {
-  console.log("Display Delete Post Confirmation");
 };
 
 exports.postDeletePost = async (req, res) => {

@@ -24,21 +24,6 @@
     </header>
 
     <div id="wrapper">
-        <section class="section first-section">
-            <div class="container-fluid">
-                <div class="masonry-blog clearfix">
-                    <div class="slider-container-img">
-                        <div class="slider-img">
-                            <img src="image1.jpg" alt="Image 1" class="slide-img">
-                            <img src="image2.jpg" alt="Image 2" class="slide-img">
-                            <img src="image3.jpg" alt="Image 3" class="slide-img">
-                            <img src="image4.jpg" alt="Image 4" class="slide-img">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="section wb">
             <div class="container">
                 <div class="row">
@@ -66,8 +51,6 @@
             </div>
         </section>
 
-        <div class="dmtop">Scroll to Top</div>
-
     </div>
 
     <footer>
@@ -78,44 +61,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // getPostSliderData();
         getPostListData();
         getCategory();
     });
-
-     // Thêm data vào slide bài viết
-    const getPostSliderData = async () => {
-        try {
-            const postApi = "http://localhost:8000/v1/post-page";
-
-            const response = await fetch(postApi);
-            const data = await response.json();
-            const posts = data.posts;                
-
-            const html = posts.map(
-                    (item) => `
-                        <div class="center-side">
-                            <div class="masonry-box post-media">
-                                <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
-                                <div class="shadoweffect">
-                                    <div class="shadow-desc">
-                                        <div class="blog-meta">
-                                            <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
-                                            <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                            <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
-                                            <small><a href="#" title="">by Amanda</a></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                `).join("");
-
-            document.querySelector(".masonry-blog").innerHTML += html;
-        } catch (error) {
-            console.error("Error fetching category data:", error);
-        }
-    }     
 
     // Lấy data bài viết với phân trang
     const getPostListData = async (page = 1) => {
@@ -248,6 +196,10 @@
     // Lấy bài viết theo danh mục
     const getPostsByCategory = async (categoryId) => {
         try {
+            // Ẩn phân trang và slider
+            document.querySelector(".pagination").classList.add("hidden");
+            document.querySelector(".slider-container-img").classList.add("hidden");
+
             const postApi = `http://localhost:8000/v1/posts/${categoryId}`;
 
             const response = await fetch(postApi, {
@@ -260,7 +212,7 @@
             if (!response.ok) throw new Error("Failed to fetch posts for this category");
 
             const posts = await response.json();
-            console.log(posts);
+            // console.log(posts);
 
             const html = posts
                 .map((item) => {
@@ -300,5 +252,4 @@
 </script>
 
 <script src="/asset-blog/js/tether.min.js"></script>
-
 </html>

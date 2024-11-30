@@ -1703,20 +1703,25 @@ button:hover{
 }
 
 .slider-container-img {
-    width: 100%;
-    max-width: 600px;
-    margin: 50px auto;
-    overflow: hidden; /* Ẩn các ảnh không nằm trong phạm vi container */
-    border-radius: 10px; /* Thêm bo góc cho slider */
+    width: 1050px;
+    margin: 20px auto;
+    overflow: hidden; 
+    border-radius: 10px; 
+    position: relative;     
 }
 
 .slider-img {
-    display: flex;
-    transition: transform 1s ease-in-out; /* Di chuyển ảnh mượt mà */
+    display: flex; 
+    transition: transform 1s ease-in-out;
 }
 
-.slide-img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+.slider-img > .slide-img {
+    width: 1050px; 
+    height: 500px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.hidden {
+    display: none !important;
 }
