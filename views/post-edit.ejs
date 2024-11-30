@@ -11,7 +11,6 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="/asset-admin/css/style.css" />
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> -->
   </head>
 
   <body>
@@ -75,8 +74,8 @@
                   required
                   placeholder="Write your content here..."
                 >
-<%= post.content %></textarea
-                >
+                  <%= post.content %>
+                </textarea>
               </div>
 
               <div class="form-group">
@@ -111,13 +110,10 @@
         <footer class="footer"><%- include('./partials/footer-admin')%></footer>
       </div>
     </div>
-    <!-- Chart library -->
+
     <script src="/asset-admin/plugins/chart.min.js"></script>
-    <!-- Icons library -->
     <script src="/asset-admin/plugins/feather.min.js"></script>
-    <!-- Custom scripts -->
     <script src="/asset-admin/js/script.js"></script>
-    <!-- CKEditer -->
     <script src="/asset-admin/ckeditor/ckeditor.js"></script>
     <script>
       CKEDITOR.replace("txaContent", {

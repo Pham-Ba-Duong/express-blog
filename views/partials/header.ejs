@@ -21,10 +21,8 @@
               </button>
             </form>
           </div>
-          <!-- end newsletter -->
         </div>
       </div>
-      <!-- end top-search -->
   
       <div class="topbar-section">
         <div class="container-fluid">
@@ -60,32 +58,12 @@
                   ><i class="fa fa-google-plus"></i
                 ></a>
               </div>
-              <!-- end social -->
             </div>
-            <!-- end col -->
   
             <div class="col-lg-4 hidden-md-down"></div>
-            <!-- end col -->
-  
-            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-              <div class="topsearch text-right">
-                <a
-                  data-toggle="collapse"
-                  href="#collapseExample"
-                  aria-expanded="false"
-                  aria-controls="collapseExample"
-                  ><i class="fa fa-search"></i> Search</a
-                >
-              </div>
-              <!-- end search -->
-            </div>
-            <!-- end col -->
           </div>
-          <!-- end row -->
         </div>
-        <!-- end header-logo -->
       </div>
-      <!-- end topbar -->
   
       <div class="header-section">
         <div class="container">
@@ -96,14 +74,10 @@
                   ><img src="/asset-blog/images/version/garden-logo.png" alt=""
                 /></a>
               </div>
-              <!-- end logo -->
             </div>
           </div>
-          <!-- end row -->
         </div>
-        <!-- end header-logo -->
       </div>
-      <!-- end header -->
   
       <header class="header">
         <div class="container">
@@ -127,10 +101,6 @@
                 <li class="nav-item">
                   <a class="nav-link color-green-hover" href="/">Home</a>
                 </li>
-                
-                <!-- <li class="nav-item">
-                  <a class="nav-link color-green-hover" href="/category">Category</a>
-                </li> -->
   
                 <div class="nav-category" style="display: flex;">
                 </div>
@@ -144,46 +114,11 @@
             </div>
           </nav>
         </div>
-        <!-- end container -->
       </header>
-      <!-- end header -->
     </div>
   </body>
 
   <script>
-    const getCategory = async () => {
-      try {
-        const postApi = "http://localhost:8000/v1/category";
-  
-        const response = await fetch(postApi);
-        const categories = await response.json();
-        // console.log(categories);
-        
-  
-        const html = categories
-          .map(
-            (item) => `
-              <li class="nav-item">
-                <a class="nav-link color-green-hover" id="${item._id}">
-                  ${item.name}
-                </a>
-              </li>`
-          )
-          .join("");
-  
-        document.querySelector(".nav-category").innerHTML += html;
-
-        // Thêm sự kiện click vào từng danh mục
-        document.querySelector(".nav-category").addEventListener("click", async (event) => {
-                event.preventDefault();
-                if (event.target.tagName === "A") {
-                const categoryId = event.target.getAttribute("id");
-                await getPostsByCategory(categoryId);
-                }
-            });
-      } catch (error) {
-        console.error("Error fetching category data:", error);
-      }
-    };
+    
   </script>
 </html>

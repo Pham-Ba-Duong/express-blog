@@ -28,16 +28,16 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                         <h2><i class="fa fa-leaf bg-green"></i> Blog</h2>
-                    </div><!-- end col -->
+                    </div>
                     <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">Blog</li>
                         </ol>
-                    </div><!-- end col -->                    
-                </div><!-- end row -->
-            </div><!-- end container -->
-        </div><!-- end page-title -->
+                    </div>                    
+                </div>
+            </div>
+        </div>
       
         
         <section class="section wb">
@@ -58,16 +58,15 @@
                                         <li><a href="#" class="fb-button btn btn-primary"><i class="fa fa-facebook"></i> <span class="down-mobile">Share on Facebook</span></a></li>
                                         <li><a href="#" class="tw-button btn btn-primary"><i class="fa fa-twitter"></i> <span class="down-mobile">Tweet on Twitter</span></a></li>
                                     </ul>
-                                </div><!-- end post-sharing -->
-                            </div><!-- end title -->
-
+                                </div>
+                            </div>
                             <div class="single-post-media">
                                 <img src="<%=image%>" alt="" class="img-fluid">
-                            </div><!-- end media -->
+                            </div>
 
                             <div class="blog-content">  
                                 <%- post.content %>
-                            </div><!-- end content -->
+                            </div>
 
                             <hr class="invis1">
 
@@ -85,9 +84,9 @@
                                             </div>                                                                        
                                         </div> -->
                                         
-                                    </div><!-- end col -->
-                                </div><!-- end row -->
-                            </div><!-- end custom-box -->
+                                    </div>
+                                </div>
+                            </div>
 
                             <hr class="invis1">
 
@@ -104,16 +103,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div><!-- end page-wrapper -->
-                    </div><!-- end col -->
+                        </div>
+                    </div>
                     <%- include('./partials/sidebar-blog') %>
-
-                </div><!-- end row -->
-            <!-- end container -->
+                </div>
         </section>
        
         <div class="dmtop">Scroll to Top</div>
-    </div><!-- end wrapper -->
+    </div>
 </body>
 <footer>
     <%- include('./partials/footer'); %>
@@ -124,9 +121,8 @@
       const name = document.getElementById('userCommentName').value;
       const email = document.getElementById('userCommentEmail').value;
       const content = document.getElementById('userComment').value;
-      const postId = "<%= post._id %>"; // Đảm bảo lấy ID đúng từ server
+      const postId = "<%= post._id %>";
     
-      // Kiểm tra dữ liệu đầu vào
       if (!postId || !name || !email || !content) {
         alert('Please fill in all fields!');
         return;
@@ -135,7 +131,6 @@
       const commentData = { postId, content, name, email };
       console.log("commentData", commentData);
       
-    
       try {
         const response = await fetch('http://localhost:8000/api/v1/comment', {
           method: 'POST',
@@ -149,10 +144,8 @@
         // console.log("result:"+result); 
         
         if (response.ok) {
-          // Sau khi gửi comment thành công, hiển thị comment mới mà không cần reload
+            // Comment thành công tự load 
           const newComment = result;
-    
-          // Tạo HTML cho comment mới
           const commentHTML = `
             <div class="media">
               <div class="media-body">
@@ -161,11 +154,9 @@
               </div>
             </div>
           `;
-    
-          // Thêm comment mới vào danh sách comments hiện tại
+
           document.querySelector('.comments-list').insertAdjacentHTML('beforeend', commentHTML);
-    
-          // Clear form fields
+
           document.getElementById('userCommentName').value = '';
           document.getElementById('userCommentEmail').value = '';
           document.getElementById('userComment').value = '';
@@ -178,8 +169,6 @@
         console.error('Error submitting comment:', error);
       }
     };
-    
-    // Gắn sự kiện khi người dùng nhấn nút "Submit Comment"
     document.querySelector('#submit').addEventListener('click', submitComment);
 </script>
     

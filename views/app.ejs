@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Blog Home</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="/asset-blog/images/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="/asset-blog/images/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet"> 
-    <link href="/asset-blog/css/bootstrap.css" rel="stylesheet">
-    <link href="/asset-blog/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/asset-blog/style.css" rel="stylesheet">
-    <link href="/asset-blog/css/responsive.css" rel="stylesheet">
-    <link href="/asset-blog/css/colors.css" rel="stylesheet">
-    <link href="/asset-blog/css/version/garden.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Blog Home</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="/asset-blog/images/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/asset-blog/images/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet">
+<link href="/asset-blog/css/bootstrap.css" rel="stylesheet">
+<link href="/asset-blog/css/font-awesome.min.css" rel="stylesheet">
+<link href="/asset-blog/style.css" rel="stylesheet">
+<link href="/asset-blog/css/responsive.css" rel="stylesheet">
+<link href="/asset-blog/css/colors.css" rel="stylesheet">
+<link href="/asset-blog/css/version/garden.css" rel="stylesheet">
 </head>
+
 <body>
     <header>
         <%- include('./partials/header') %>
@@ -25,7 +26,15 @@
     <div id="wrapper">
         <section class="section first-section">
             <div class="container-fluid">
-                <div class="masonry-blog clearfix">                 
+                <div class="masonry-blog clearfix">
+                    <div class="slider-container-img">
+                        <div class="slider-img">
+                            <img src="image1.jpg" alt="Image 1" class="slide-img">
+                            <img src="image2.jpg" alt="Image 2" class="slide-img">
+                            <img src="image3.jpg" alt="Image 3" class="slide-img">
+                            <img src="image4.jpg" alt="Image 4" class="slide-img">
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -36,17 +45,16 @@
                     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
                         <div class="page-wrapper">
                             <div class="blog-list clearfix">
-                                
+
                             </div>
                         </div>
-
                         <hr class="invis">
 
                         <div class="row">
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-start">
-                                        
+
                                     </ul>
                                 </nav>
                             </div>
@@ -59,180 +67,238 @@
         </section>
 
         <div class="dmtop">Scroll to Top</div>
-        
+
     </div>
 
     <footer>
         <%- include('./partials/footer') %>
     </footer>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // getPostSliderData();
-            getPostListData();
-            getPostsByCategory();
-            getCategory();
-        });
+</body>
 
-        // Hàm lấy bài viết theo danh mục
-        const getPostsByCategory = async (categoryId) => {
-            try {
-                if (!categoryId) {
-                    console.error("Category ID is missing");
-                    return;
-                }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // getPostSliderData();
+        getPostListData();
+        getCategory();
+    });
 
-                const postApi = `http://localhost:8000/v1/posts/${categoryId}`;
-                const response = await fetch(postApi);
-                
-                if (!response.ok) {
-                    throw new Error("Failed to fetch posts");
-                }
-                
-                const posts = await response.json();
+     // Thêm data vào slide bài viết
+    const getPostSliderData = async () => {
+        try {
+            const postApi = "http://localhost:8000/v1/post-page";
 
-                const html =  posts.map(
-                            (post) => `
-                            <div class="center-side">
-                                <div class="masonry-box post-media">
-                                    <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
-                                    <div class="shadoweffect">
-                                        <div class="shadow-desc">
-                                            <div class="blog-meta">
-                                                <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
-                                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                                <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
-                                                <small><a href="#" title="">by Amanda</a></small>
-                                            </div>
+            const response = await fetch(postApi);
+            const data = await response.json();
+            const posts = data.posts;                
+
+            const html = posts.map(
+                    (item) => `
+                        <div class="center-side">
+                            <div class="masonry-box post-media">
+                                <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
+                                <div class="shadoweffect">
+                                    <div class="shadow-desc">
+                                        <div class="blog-meta">
+                                            <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
+                                            <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
+                                            <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
+                                            <small><a href="#" title="">by Amanda</a></small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            `
-                        )
-                        .join("");
+                        </div>
+                `).join("");
 
-                document.querySelector(".masonry-blog").innerHTML = html;
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+            document.querySelector(".masonry-blog").innerHTML += html;
+        } catch (error) {
+            console.error("Error fetching category data:", error);
+        }
+    }     
 
-        // Thêm data vào slide bài viết
-        const getPostSliderData = async () => {
-            try {
-                const postApi = "http://localhost:8000/v1/post-page";
+    // Lấy data bài viết với phân trang
+    const getPostListData = async (page = 1) => {
+        try {
+            const postApi = `http://localhost:8000/v1/post-page?page=${page}`;
 
-                const response = await fetch(postApi);
-                const data = await response.json();
-                const posts = data.posts;                
+            const response = await fetch(postApi);
+            const data = await response.json();
+            const posts = data.posts;
+            const totalPages = data.totalPages;
+            const currentPage = data.currentPage;
 
-                const html = posts.map(
-                        (item) => `
-                            <div class="center-side">
-                                <div class="masonry-box post-media">
-                                    <img src="/asset-blog/upload/garden_cat_01.jpg" alt="" class="img-fluid">
-                                    <div class="shadoweffect">
-                                        <div class="shadow-desc">
-                                            <div class="blog-meta">
-                                                <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
-                                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                                <small><a href="post/${item._id}" title="">${item.createdAt}</a></small>
-                                                <small><a href="#" title="">by Amanda</a></small>
-                                            </div>
-                                        </div>
-                                    </div>
+            const html = posts.map(
+                (item) => {
+                    const createdAt = new Date(item.createdAt).toLocaleDateString(); 
+                    let image = item.image
+                        ? item.image.replace("assets\\", "\\")
+                        : "";
+                    const shortContent = item.shortContent.length > 120 
+                        ? item.shortContent.slice(0, 120) + '...'
+                        : item.shortContent;
+                    return `
+                        <div class="blog-box row">
+                            <div class="col-md-4">
+                                <div class="post-media">
+                                    <a href="post/${item.id}" title="">
+                                        <img src="${image}" alt="" class="img-fluid">
+                                        <div class="hovereffect"></div>
+                                    </a>
                                 </div>
                             </div>
-                    `).join("");
 
-                document.querySelector(".masonry-blog").innerHTML += html;
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
-        }     
-
-        // Lấy data bài viết với phân trang
-        const getPostListData = async (page = 1) => {
-            try {
-                const postApi = `http://localhost:8000/v1/post-page?page=${page}`;
-
-                const response = await fetch(postApi);
-                const data = await response.json();
-                const posts = data.posts;
-                const totalPages = data.totalPages;
-                const currentPage = data.currentPage;
-
-                const html = posts.map(
-                    (item) => {
-                        const createdAt = new Date(item.createdAt).toLocaleDateString(); 
-                        let image = item.image
-                            ? item.image.replace("assets\\", "\\")
-                            : "";
-                        const shortContent = item.shortContent.length > 120 
-                            ? item.shortContent.slice(0, 120) + '...'
-                            : item.shortContent;
-                        return `
-                            <div class="blog-box row">
-                                <div class="col-md-4">
-                                    <div class="post-media">
-                                        <a href="post/${item.id}" title="">
-                                            <img src="${image}" alt="" class="img-fluid">
-                                            <div class="hovereffect"></div>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="blog-meta big-meta col-md-8">
-                                    <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
-                                    <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
-                                    <p>${shortContent}</p>
-                                    <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
-                                    <small><a href="post/${item._id}" title="">${createdAt}</a></small>
-                                </div>
+                            <div class="blog-meta big-meta col-md-8">
+                                <span class="bg-aqua"><a href="post/${item._id}" title="">${item.title}</a></span>
+                                <h4><a href="post/${item._id}" title="">${item.title}</a></h4>
+                                <p>${shortContent}</p>
+                                <small><a href="#" title=""><i class="fa fa-eye"></i> 1887</a></small>
+                                <small><a href="post/${item._id}" title="">${createdAt}</a></small>
                             </div>
-                            <hr class="invis">
-                        `
-                }).join("");
+                        </div>
+                        <hr class="invis">
+                    `
+            }).join("");
 
-                document.querySelector(".blog-list").innerHTML = html;
+            document.querySelector(".blog-list").innerHTML = html;
 
-                renderPagination(currentPage, totalPages);  
-            } catch (error) {
-                console.error("Error fetching category data:", error);
-            }
+            renderPagination(currentPage, totalPages);  
+        } catch (error) {
+            console.error("Error fetching category data:", error);
+        }
+    }
+
+    // Render phân trang
+    const renderPagination = (currentPage, totalPages) => {
+        const paginationContainer = document.querySelector(".pagination");
+        paginationContainer.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement("li");
+            pageItem.className = `page-item ${i === currentPage ? "btnred" : ""}`;
+            pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+            paginationContainer.appendChild(pageItem);
         }
 
-        // Render phân trang
-        const renderPagination = (currentPage, totalPages) => {
-            const paginationContainer = document.querySelector(".pagination");
-            paginationContainer.innerHTML = "";
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageItem = document.createElement("li");
-                pageItem.className = `page-item ${i === currentPage ? "btnred" : ""}`;
-                pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-                paginationContainer.appendChild(pageItem);
-            }
-
-            document.querySelectorAll(".pagination .page-link").forEach((link) => {
-                link.addEventListener("click", (event) => {
-                    event.preventDefault();
-                    const page = parseInt(event.target.dataset.page);
-                    getPostListData(page);
-                    
-                });
+        document.querySelectorAll(".pagination .page-link").forEach((link) => {
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                const page = parseInt(event.target.dataset.page);
+                getPostListData(page);
+                
             });
-        };
-    
-    </script>
+        });
+    };
 
-    <!-- Core JavaScript
-    ================================================== -->
-    <!-- <script src="/asset-blog/js/jquery.min.js"></script> -->
-    <script src="/asset-blog/js/tether.min.js"></script>
-    <!-- <script src="/asset-blog/js/bootstrap.min.js"></script> -->
-    <!-- <script src="/asset-blog/js/custom.js"></script> -->
-</body>
+    let categoriesData = [];
+    // Lấy Category và sử lý click
+    const getCategory = async () => {
+        try {
+            const postApi = "http://localhost:8000/v1/category";
+
+            const response = await fetch(postApi, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch categories");
+
+            categories = await response.json();
+            // console.log(categories);
+
+            const html = categories
+                .map(
+                    (item) => `
+                    <li class="nav-item">
+                        <a class="nav-link color-green-hover" data-id="${item._id}">
+                            ${item.name}
+                        </a>
+                    </li>
+                `
+                )
+                .join("");
+
+            document.querySelector(".nav-category").innerHTML += html;
+
+            // Xử lý click vào từng category
+            document.querySelector(".nav-category").addEventListener("click", async (event) => {
+                event.preventDefault();
+
+                const target = event.target.closest("a[data-id]");
+
+                if (target) {
+                    const categoryId = target.getAttribute("data-id");
+                    console.log("Category ID: ", categoryId);
+                    if (!categoryId) {
+                        console.error("Category ID is missing");
+                        return;
+                    }
+                    await getPostsByCategory(categoryId);
+                } else {
+                    console.error("Category ID is missing");
+                }
+            });
+        } catch (error) {
+            console.error("Error fetching category data:", error);
+        }
+    };
+
+    // Lấy bài viết theo danh mục
+    const getPostsByCategory = async (categoryId) => {
+        try {
+            const postApi = `http://localhost:8000/v1/posts/${categoryId}`;
+
+            const response = await fetch(postApi, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch posts for this category");
+
+            const posts = await response.json();
+            console.log(posts);
+
+            const html = posts
+                .map((item) => {
+                    const createdAt = new Date(item.createdAt).toLocaleDateString();
+                    let image = item.image ? item.image.replace("assets\\", "\\") : "";
+                    const shortContent = item.shortContent.length > 100 ? item.shortContent.slice(0, 70) + '...' : item.shortContent;
+
+                    // Tên category từ categories
+                    const category = categories.find(cat => cat._id === item.category);
+                    const categoryName = category.name;
+
+                    return `
+                    <div class="center-side">
+                        <div class="masonry-box post-media">
+                            <img src="${image}" alt="" class="img-fluid">
+                            <div class="shadoweffect">
+                                <div class="shadow-desc">
+                                    <div class="blog-meta">
+                                        <span class="bg-aqua"><a href="post/${item._id}" title="">${categoryName}</a></span>  <!-- Thêm categoryName vào đây -->
+                                        <h6><a href="post/${item._id}" title="">${shortContent}</a></h6>
+                                        <small><a href="post/${item._id}" title="">${createdAt}</a></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                })
+                .join("");
+
+            document.querySelector(".blog-list").innerHTML = html;
+        } catch (error) {
+            console.error("Error fetching posts by category:", error);
+        }
+    };
+
+</script>
+
+<script src="/asset-blog/js/tether.min.js"></script>
 
 </html>

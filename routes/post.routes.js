@@ -7,7 +7,7 @@ const PostController = require('../controllers/post.controller');
 route.get('/v1/posts',PostController.getAllPostApi);
 route.get('/v1/posts/search',PostController.getPostByTitle);
 route.get('/v1/post-page',PostController.getPostApiPage);
-route.get('/v1/posts/:categoryId',PostController.getAllPostByCategoryId);
+route.get('/v1/posts/:categoryId', PostController.getAllPostByCategoryId);
 
 route.get('/post/:id',PostController.getPostById);
 

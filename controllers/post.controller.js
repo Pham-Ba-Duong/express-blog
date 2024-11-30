@@ -75,33 +75,15 @@ exports.getAllPostApi = async (req, res) => {
 };
 
 exports.getAllPostByCategoryId = async (req, res) => {
+  const { categoryId } = req.params; 
   try {
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        console.error("Invalid category ID format");
-        return;
+    const posts = await PostModel.find({ category: categoryId });
+    if (!posts.length) {
+      return res.status(404).json({ message: 'No posts found for this category' });
     }
-    const { id } = req.params;
-    // console.log(`Category ID: ${id}`);
-
-    const category = await CategoryModel.findById(id);
-    // console.log("Category by id" + category);
-    
-
-    if (!category) {
-        return res.status(404).json({ message: "Category not found" });
-    }
-
-    const posts = await PostModel.find({ category: id });
-    // console.log(posts);
-    
-    res.json({
-      category: category.name, 
-      posts,                   
-    });
+    res.json(posts);
   } catch (error) {
-      console.error("Error fetching posts:", error.message);
-      res.status(500).send("Error: " + error.message);
+    res.status(500).json({ message: 'Error fetching posts for this category' });
   }
 };
 // exports.getAllPostByCategoryId  = async (req, res) => {
