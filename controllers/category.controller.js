@@ -1,5 +1,6 @@
 const CategoryModel = require("../models/category.model");
 
+//Api
 exports.getCategoryApi = async (req, res) => {
   try {
     const listCategory = await CategoryModel.find().sort({ createdAt: -1 });
@@ -9,6 +10,7 @@ exports.getCategoryApi = async (req, res) => {
   }
 };
 
+//Render
 exports.getPopularCategoryData = async () => {
   try {
       const postApi = "http://localhost:8000/v1/category";
@@ -33,10 +35,6 @@ exports.getCategoryById = async (req, res) => {
   } catch(error) {
     res.status(400).json(error.message);
   }
-};
-
-exports.createCategory = () => {
-  console.log("Get Create category");
 };
 
 exports.postCreateCategory = async (req, res) => {
@@ -102,11 +100,6 @@ exports.postUpdateCategory = async (req, res) => {
     console.error(error);
     res.status(500).send('Error updating category');
   }
-};
-
-
-exports.deleteCategory = (req, res) => {
-  console.log("Delete category");
 };
 
 exports.postDeleteCategory = async (req, res) => {

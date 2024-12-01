@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const CategoryModel = require('./models/category.model');
 const CommentModel = require('./models/comment.model');
 const PostModel = require('./models/post.model');
-const UserModel = require('./models/user.model');
 const CategoryRoutes = require('./routes/category.routes');
 const PostRoutes = require('./routes/post.routes');
 const ContactRoutes = require('./routes/contact.routes');

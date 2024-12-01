@@ -14,8 +14,6 @@
        <link href="/asset-blog/css/font-awesome.min.css" rel="stylesheet">
        <link href="/asset-blog/style.css" rel="stylesheet">
        <link href="/asset-blog/css/responsive.css" rel="stylesheet">
-       <link href="/asset-blog/css/colors.css" rel="stylesheet">
-       <link href="/asset-blog/css/version/garden.css" rel="stylesheet">
 </head>
 <header>
     <%- include('./partials/header'); %>
@@ -74,16 +72,16 @@
                                 <h4 class="small-title">Comments</h4>
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <!-- <div class="comments-list">
-                                            <div class="media">
+                                        <div class="comments-list">
+                                            <!-- <div class="media">
                                                 <div class="media-body">
                                                     <h4 class="media-heading user_name">Amanda Martines <small>5 days ago</small></h4>
                                                     <p>Exercitation photo booth stumptown tote bag Banksy, elit small batch freegan sed. Craft beer elit seitan exercitation, photo booth et 8-bit kale chips proident chillwave deep v laborum. Aliquip veniam delectus, Marfa eiusmod Pinterest in do umami readymade swag. Selfies iPhone Kickstarter, drinking vinegar jean.</p>
                                                     <a href="#" class="btn btn-primary btn-sm">Reply</a>
                                                 </div>
-                                            </div>                                                                        
-                                        </div> -->
-                                        
+                                            </div>     -->
+                                            <hr>                                                                 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -95,8 +93,6 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-wrapper">
-                                            <input id="userCommentName" name="userCommentName" type="text" class="form-control" placeholder="Your name">
-                                            <input id="userCommentEmail" name="userCommentEmail" type="text" class="form-control" placeholder="Email address">
                                             <textarea id="userComment" name="userComment" class="form-control" placeholder="Your comment"></textarea>
                                             <button type="button" id="submit" class="btn btn-primary">Submit Comment</button>
                                         </div>
@@ -117,59 +113,76 @@
 </footer>
 
 <script>
-    const submitComment = async () => {
-      const name = document.getElementById('userCommentName').value;
-      const email = document.getElementById('userCommentEmail').value;
-      const content = document.getElementById('userComment').value;
-      const postId = "<%= post._id %>";
-    
-      if (!postId || !name || !email || !content) {
-        alert('Please fill in all fields!');
-        return;
-      }
-    
-      const commentData = { postId, content, name, email };
-      console.log("commentData", commentData);
-      
-      try {
-        const response = await fetch('http://localhost:8000/api/v1/comment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(commentData),
-        });
-    
-        const result = await response.json();
-        // console.log("result:"+result); 
-        
-        if (response.ok) {
-            // Comment thành công tự load 
-          const newComment = result;
-          const commentHTML = `
-            <div class="media">
-              <div class="media-body">
-                <h4 class="media-heading user_name">${newComment.name} <small>${new Date(newComment.createdAt).toLocaleString()}</small></h4>
-                <p>${newComment.content}</p>
-              </div>
-            </div>
-          `;
+    document.addEventListener("DOMContentLoaded", function () {
+        getAllCommentPost();
+    });
 
-          document.querySelector('.comments-list').insertAdjacentHTML('beforeend', commentHTML);
+    //Tạo comment cho post(id)
+    const createComment = async () => {
+        const postId = "<%= post._id %>";
+        const content = document.getElementById('userComment').value;
 
-          document.getElementById('userCommentName').value = '';
-          document.getElementById('userCommentEmail').value = '';
-          document.getElementById('userComment').value = '';
-    
-          alert('Comment submitted successfully!');
-        } else {
-          alert(result.message || 'Failed to submit comment.');
+        const commentData = { postId, content };
+
+        try {
+            const commentApi = "http://localhost:8000/api/v1/comment";
+            const response = await fetch(commentApi, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(commentData),
+            });
+
+            if (response.ok) {
+                alert("Create comment success");
+                window.location.href = `/post/${postId}`;
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.message || "Unknown error occurred"}`);
+            }
+        } catch (error) {
+            console.error('Error submitting comment:', error);
         }
-      } catch (error) {
-        console.error('Error submitting comment:', error);
-      }
     };
-    document.querySelector('#submit').addEventListener('click', submitComment);
+
+    document.querySelector('#submit').addEventListener('click', createComment);
+
+
+    const getAllCommentPost = async() => {
+        const postId = "<%= post._id %>";
+        const commentsApi = `/api/v1/comments-post/${postId}`;
+        
+        const response = await fetch(commentsApi);
+
+        if (!response.ok) throw new Error("Failed to fetch posts for this category");
+
+        const comments = await response.json();
+
+        if (!comments || comments.length === 0) {
+            document.querySelector(".comments-list").innerHTML = `
+                <p>This article has no comments yet. <br>Be the first to comment :))</p>
+            `;
+            return;
+        }
+
+        const html = comments
+                .map((item) => {
+                    const createdAt = new Date(item.createdAt).toLocaleDateString();
+                    return `
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading user_name">${item.userName} <small>${createdAt}</small></h4>
+                            <p>${item.content}</p>
+                            <a href="#" class="btn btn-primary btn-sm">Reply</a>
+                            <hr>
+                        </div>
+                    </div>
+                `;
+                })
+                .join("");
+
+        document.querySelector(".comments-list").innerHTML = html;
+    }
+
 </script>
     
 </html>

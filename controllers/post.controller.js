@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
 
+//Api
 exports.getPostsApi = async (req, res) => {
   try {
     const posts = await PostModel.find().sort({ createdAt: -1 });
@@ -11,7 +12,7 @@ exports.getPostsApi = async (req, res) => {
   }
 };
 
-exports.getPostsApiPage = async (req, res) => {
+exports.getPostsPageApi = async (req, res) => {
   try {
     const { page = 1, limit = 6 } = req.query;
     const posts = await PostModel.find()
@@ -34,7 +35,7 @@ exports.getPostsApiPage = async (req, res) => {
   }
 };
 
-exports.getPostsByTitle = async (req, res) => {
+exports.getPostsByTitleApi = async (req, res) => {
   try {
     const postSearch = req.query.search;
 
@@ -55,18 +56,7 @@ exports.getPostsByTitle = async (req, res) => {
   }
 };
 
-exports.getPostById = async (req, res) => {
-  const { id } = req.params;
-  const post = await PostModel.findById(id);
-
-  let image = post.image
-  ? post.image.replace("assets\\", "\\")
-  : "";
-
-  res.render("../views/post.details.page.ejs", { post, image });
-};
-
-exports.getPostsByCategoryId = async (req, res) => {
+exports.getPostsByCategoryIdApi = async (req, res) => {
   const { categoryId } = req.params; 
   try {
     const posts = await PostModel.find({ category: categoryId });
@@ -79,13 +69,64 @@ exports.getPostsByCategoryId = async (req, res) => {
   }
 };
 
-exports.getPostCountByCategoryId = async (req, res) => {
+exports.getPostCountByCategoryIdApi = async (req, res) => {
   const { categoryId } = req.params;
   try {
     const count = await PostModel.countDocuments({ category: categoryId });
     res.json({ categoryId, count });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching post count for this category' });
+  }
+};
+
+exports.getPostByIdApi = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
+    const post = await PostModel.findById(id).populate({
+      path: "comments",
+      model: "CommentEntity",
+      select: "_id content post userName",
+    }).exec();
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const image = post.image ? post.image.replace("assets\\", "\\") : "";
+
+    res.status(200).json(post);
+  } catch (err) {
+    console.error("Error in getPostById:", err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+//Render
+exports.getPostById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
+    const post = await PostModel.findById(id)
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const image = post.image ? post.image.replace("assets\\", "\\") : "";
+
+    res.render("../views/post.details.page.ejs", { post, image });
+  } catch (err) {
+    console.error("Error in getPostById:", err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

@@ -130,7 +130,8 @@
         getPopularCategoryDataAdmin();
       });
 
-      const getPopularCategoryDataAdmin = async () => {
+
+      const getCategoryData = async () => {
         try {
           const categoryApi = "http://localhost:8000/v1/category";
 
@@ -159,7 +160,7 @@
 
           const form = document.getElementById("updatePostForm");
           const formData = new FormData(form); 
-          console.log(formData);
+          // console.log(formData);
 
           const postId = document.getElementById("postItem").value;
 

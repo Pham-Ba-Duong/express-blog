@@ -30,7 +30,7 @@
             <a href="/admin/manage-post">
               <button class="button-btn">x</button>
             </a>
-            <form action="http://localhost:8000/v1/posts" id="createPostForm" enctype="multipart/form-data" method="POST">
+            <form action="http://localhost:8000/post/create" id="createPostForm" enctype="multipart/form-data" method="POST">
               <div class="form-group">
                 <label for="title">Post Title</label>
                 <div class="bnt"></div>
@@ -154,7 +154,7 @@
           const formData = new FormData(form);
 
           try {
-            const response = await fetch("http://localhost:8000/v1/posts", {
+            const response = await fetch("http://localhost:8000/post/create", {
               method: "POST",
               body: formData
             });

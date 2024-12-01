@@ -202,12 +202,7 @@
 
             const postApi = `http://localhost:8000/v1/posts/${categoryId}`;
 
-            const response = await fetch(postApi, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await fetch(postApi);
 
             if (!response.ok) throw new Error("Failed to fetch posts for this category");
 
