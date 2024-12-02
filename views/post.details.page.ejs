@@ -156,7 +156,7 @@
         const commentData = { postId, content };
 
         try {
-            const commentApi = "http://localhost:8000/api/v1/comment";
+            const commentApi = "http://localhost:8000/api/v1/comment/create";
             const response = await fetch(commentApi, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

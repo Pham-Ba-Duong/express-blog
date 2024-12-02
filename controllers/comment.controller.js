@@ -3,13 +3,18 @@ const CommentModel = require("../models/comment.model")
 
 //Api
 exports.getAllComment = async (req, res) => {
-    try {
-        const comments = await CommentModel.find(); 
-        res.status(200).json(comments); 
-      } catch (err) {
-        console.error("Error fetching comments:", err);
-        res.status(500).json({ error: "Failed to fetch comments" });
-      }
+  try {
+      const comments = await CommentModel.find()
+      .populate({
+          path: "post",
+          select: "title -_id"
+        })
+        .exec(); 
+      res.status(200).json(comments); 
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+      res.status(500).json({ error: "Failed to fetch comments" });
+    }
 };
 
 exports.postCreateComment = async (req, res) => {
@@ -47,13 +52,15 @@ exports.getAllCommentsPost = async (req, res) => {
   }
 
   try {
-      console.log("Fetching comments for Post ID:", postId); // Log postId để kiểm tra
+      console.log("Fetching comments for Post ID:", postId);
       const commentsFound = await PostModel.findById(postId).populate({
           path: 'comments',
           model: "CommentEntity",
           select: 'userName content createdAt',
           options: { sort: { createdAt: -1 } }
       });
+      // console.log(commentsFound);
+      
 
       if (!commentsFound) {
           return res.status(404).json({ message: "Post not found" });
@@ -61,50 +68,25 @@ exports.getAllCommentsPost = async (req, res) => {
 
       res.json(commentsFound.comments || []);
   } catch (error) {
-      console.error("Error fetching comments:", error.message); // Log lỗi chi tiết
+      console.error("Error fetching comments:", error.message); 
       res.status(500).json({ message: "Error fetching comments for this post", error: error.message });
   }
 };
 
 exports.deleteDeleteComment = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log(id);
+    const { id} = req.params;
+    // console.log(req.params);
     
-    const category = await CommentModel.findByIdAndDelete(id);
+    const comment = await CommentModel.findByIdAndDelete(id);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
     
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
     console.error("Error deleting comment:", error);
     res.status(500).json({ message: "Failed to delete comment" });
-  }
-};
-
-exports.postDeleteComment = async (req, res) => {
-  const { postId,  id } = req.params;
-  console.log(req.params);
-  
-
-  try {
-      // Xóa comment trong CommentModel
-      const deletedComment = await CommentModel.findByIdAndDelete(id);
-      // console.log(deletedComment);
-      
-
-      if (!deletedComment) {
-          return res.status(404).json({ message: "Comment not found" });
-      }
-
-      // Xóa commentId trong danh sách comments của Post
-      const post = await PostModel.findById(postId);
-      if (post) {
-          post.comments = post.comments.filter((id) => id.toString() !== id);
-          await post.save();
-      }
-
-      res.status(200).json({ message: "Comment deleted successfully" });
-  } catch (error) {
-      console.error("Error deleting comment:", error);
-      res.status(500).json({ message: "Internal server error" });
   }
 };

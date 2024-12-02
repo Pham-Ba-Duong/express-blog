@@ -5,7 +5,14 @@ const PostModel = require("../models/post.model");
 //Api
 exports.getPostsApi = async (req, res) => {
   try {
-    const posts = await PostModel.find().sort({ createdAt: -1 });
+    const posts = await PostModel.find()
+    .sort({ createdAt: -1 })
+    .populate(
+      {
+        path: "category",
+        select: "name -_id"
+      }
+    ).exec();
     res.json(posts);
   } catch (error) {
     res.status(500).send("Error :" + error.message);

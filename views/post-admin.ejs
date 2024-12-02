@@ -163,20 +163,11 @@
           const posts = await response.json();
 
           // Chạy qua các postItem và lấy thông tin category
-          const htmlPostAdmin = await Promise.all(
-            posts.map(async (item) => {
+          const htmlPostAdmin = posts.map((item) => {
               const createdAt = new Date(item.createdAt).toLocaleDateString();
               let image = item.image
                 ? item.image.replace("assets\\", "\\")
                 : "";
-
-              let categoryName = "Unknown Category";
-              if (!item.category) {
-                console.warn(`Post with ID ${item._id} has no category.`);
-                return "Unknown Category";
-              } else {
-                categoryName = await getCategoryById(item.category);
-              }
 
               return `
                 <tr id="trow_${item._id}">
@@ -195,7 +186,7 @@
                     </label>
                   </td>
                   <td>${item.title}</td>
-                  <td id="category-name-${item._id}">${categoryName}</td>
+                  <td id="category-name-${item._id}">${item.category.name}</td>
                   <td>${createdAt}</td>
                   <td><a href="/admin/manage-post/comments" id="showComment" data-id="${item._id}"><button class="btn btn-show-comment">Show</button></a></td>
                   <td>
@@ -204,8 +195,7 @@
                   </td>
                 </tr>
               `;
-            })
-          );
+          });
 
           document.querySelector("#list-post-admin").innerHTML = htmlPostAdmin;
 

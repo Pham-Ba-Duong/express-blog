@@ -8,7 +8,6 @@ const PostSchema = new mongoose.Schema(
     content: { type: String, required: true },
     comments: [{ type: mongoose.Types.ObjectId, ref: "CommentEntity" }],
     category: { type: mongoose.Types.ObjectId, ref: "CategoryEntity" },
-    user: { type: mongoose.Types.ObjectId, ref: "users" },
   },
   { timestamps: true }
 );
