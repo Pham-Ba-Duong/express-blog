@@ -111,36 +111,7 @@
         getAllCommentPost();
     });
 
-    //Tạo comment cho post(id)
-    const createComment = async () => {
-        const postId = "<%= post._id %>";
-        const content = document.getElementById('userComment').value;
-
-        const commentData = { postId, content };
-
-        try {
-            const commentApi = "http://localhost:8000/api/v1/comment";
-            const response = await fetch(commentApi, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(commentData),
-            });
-
-            if (response.ok) {
-                alert("Create comment success");
-                window.location.href = `/post/${postId}`;
-            } else {
-                const error = await response.json();
-                alert(`Error: ${error.message || "Unknown error occurred"}`);
-            }
-        } catch (error) {
-            console.error('Error submitting comment:', error);
-        }
-    };
-
-    document.querySelector('#submit').addEventListener('click', createComment);
-
-
+    // Lấy tất cả comment của post
     const getAllCommentPost = async() => {
         const postId = "<%= post._id %>";
         const commentsApi = `/api/v1/comments-post/${postId}`;
@@ -176,6 +147,35 @@
 
         document.querySelector(".comments-list").innerHTML = html;
     }
+
+    //Tạo comment cho post(id)
+    const createComment = async () => {
+        const postId = "<%= post._id %>";
+        const content = document.getElementById('userComment').value;
+
+        const commentData = { postId, content };
+
+        try {
+            const commentApi = "http://localhost:8000/api/v1/comment";
+            const response = await fetch(commentApi, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(commentData),
+            });
+
+            if (response.ok) {
+                alert("Create comment success");
+                window.location.href = `/post/${postId}`;
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.message || "Unknown error occurred"}`);
+            }
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+        }
+    };
+
+    document.querySelector('#submit').addEventListener('click', createComment);
 
 </script>
     

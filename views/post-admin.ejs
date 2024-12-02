@@ -45,6 +45,7 @@
                   <th>Title</th>
                   <th>Category</th>
                   <th>Date</th>
+                  <th>Comments</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -196,6 +197,7 @@
                   <td>${item.title}</td>
                   <td id="category-name-${item._id}">${categoryName}</td>
                   <td>${createdAt}</td>
+                  <td><a href="/admin/manage-post/comments" id="showComment" data-id="${item._id}"><button class="btn btn-show-comment">Show</button></a></td>
                   <td>
                     <a href="/post/update/${item._id}" id="edit" data-id="${item._id}"><button class="btn btn-edit">Edit</button></a> | 
                     <a href="" id="delete" data-id="${item._id}"><button class="btn btn-delete">Delete</button> </a>

@@ -10,8 +10,7 @@ route.get('/manage-post/create', AdminController.getManageCreatePost);
 route.get('/manage-category', AdminController.getManageCategory);
 route.get('/manage-category/create', AdminController.getManageCreateCategory);
 
-route.get('/manage-post/create/create-category-success', AdminController.getCreateCategorySuccess);
-route.get('/manage-category/create/create-post-success', AdminController.getCreatePostSuccess);
+route.get('/manage-post/comments', AdminController.getCommentsPost);
 
 route.get('/manage-tags', AdminController.getManageTags);
 

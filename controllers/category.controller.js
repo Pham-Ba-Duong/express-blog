@@ -41,28 +41,25 @@ exports.postCreateCategory = async (req, res) => {
   const { categoryName } = req.body;
 
   if (!categoryName) {
-    return res.status(400).send("Category name is required.");
+    return res.status(400).json({ error: "Category name is required." });
   }
+
   try {
-    const existingCategory = await CategoryModel.findOne({
-      name: categoryName,
-    });
+    const existingCategory = await CategoryModel.findOne({ name: categoryName });
     if (existingCategory) {
-      return res.render("../views/category-create.ejs", {
-        error: "Category name already exists.",
-        categoryName,
-      });
+      return res.status(400).json({ error: "Category name already exists." });
     }
-    const newCategory = new CategoryModel({
-      name: categoryName,
-    });
-    await newCategory.save();
-    res.redirect("/admin/manage-post/create/create-category-success");
+
+    const category = new CategoryModel({ name: categoryName });
+    await category.save();
+
+    res.status(201).json({ message: "Category created successfully.", category });
   } catch (error) {
     console.error("Error creating category: ", error);
-    res.status(500).send("Error creating category: " + error.message);
+    res.status(500).json({ error: "Error creating category: " + error.message });
   }
 };
+
 
 exports.getUpdateCategory = async (req, res) => {
   try {

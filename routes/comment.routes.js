@@ -6,6 +6,7 @@ route.get('/api/v1/comment',CommentController.getAllComment);
 route.post('/api/v1/comment',CommentController.postCreateComment);
 route.get('/api/v1/comments-post/:postId',CommentController.getAllCommentsPost);
 
-route.delete('/comment/delete/:id',CommentController.postDeleteComment);
+route.delete('/comments/delete/:id', CommentController.deleteDeleteComment)
+route.delete('/api/v1/comments-post/:postId/:id',CommentController.postDeleteComment);
 
 module.exports = route;

@@ -36,11 +36,6 @@
             <table class="posts-table">
               <thead>
                 <tr class="users-table-info">
-                  <th>
-                    <label class="users-table__checkbox ms-20">
-                      <!-- <input type="checkbox" class="check-all" /> -->
-                    </label>
-                  </th>
                   <th>Title</th>
                   <th>Date</th>
                   <th>Action</th>
@@ -86,12 +81,7 @@
                   (item) => { 
                     const createdAt = new Date(item.createdAt).toLocaleDateString();
                     return `
-                      <tr>
-                          <td>
-                              <label class="users-table__checkbox">
-                                <input type="checkbox" class="check" />
-                              </label>
-                          </td>
+                      <tr id="trow_${item._id}">
                           <td>${item.name}</td>
                           <td>${createdAt}</td>
                           <td>
@@ -101,40 +91,38 @@
                       </tr>
                   `
           }).join("");
-              document.querySelector("#list-category-admin").innerHTML = htmlCategoryAdmin;
+            document.querySelector("#list-category-admin").innerHTML = htmlCategoryAdmin;
 
-              //Click update
-              document.querySelectorAll(".btn-edit").forEach((button) => {
-              button.addEventListener("click", (e) => {
-                  const categoryId = e.target.closest("a").getAttribute("data-id");
-                  if (categoryId) {
-                    window.location.href = `/category/update/${categoryId}`;
-                  }
-                });
+            //Click update
+            document.querySelectorAll(".btn-edit").forEach((button) => {
+            button.addEventListener("click", (e) => {
+                const categoryId = e.target.closest("a").getAttribute("data-id");
+                if (categoryId) {
+                  window.location.href = `/category/update/${categoryId}`;
+                }
               });
-
-          // Click delete
-          document.querySelectorAll(".btn-delete").forEach((button) => {
-            button.addEventListener("click", async (e) => {
-              const categoryId = e.target.closest("a").getAttribute("data-id");
-              if (!categoryId) {
-                alert("Invalid category ID.");
-                return;
-              }
-              await deleteCategory(categoryId);
             });
-          });
 
-              feather.replace();
-              console.log(feather);
+            // Click delete
+            document.querySelectorAll(".btn-delete").forEach((button) => {
+              button.addEventListener("click", async (e) => {
+                e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+                const categoryId = e.target.closest("a").getAttribute("data-id");
+                if (!categoryId) {
+                  alert("Invalid category ID.");
+                  return;
+                }
+                await deleteCategory(categoryId);
+              });
+            });
           } catch (error) {
-              console.error("Error fetching category data:", error);
+              console.log("Error fetching category data:", error);
           }
       };
   
 
       const deleteCategory = async (categoryId) => {
-        try {
+        try {        
           const confirmDelete = confirm(
             "Are you sure you want to delete this category?"
           );
@@ -146,7 +134,7 @@
 
           if (response.ok) {
             document.getElementById(`trow_${categoryId}`).remove();
-            alert("category deleted successfully!");
+            alert("Category deleted successfully!");
           } else {
             alert("Failed to delete category.");
           }

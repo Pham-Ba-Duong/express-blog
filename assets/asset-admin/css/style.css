@@ -4525,6 +4525,9 @@ button.submit-btn:hover {
   cursor: pointer;
   transition: 0.3s all ease;
 }
+.btn-show-comment {
+  color: #000d50;
+}
 .btn-edit {
   background-color: rgb(255, 212, 82);
 }

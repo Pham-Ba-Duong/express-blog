@@ -23,11 +23,8 @@ exports.getManageCreateCategory = (req, res) => {
   res.render("../views/category-create.ejs");
 };
 
-exports.getCreateCategorySuccess = (req, res) => {
-  res.render("../views/partials/create-category-success.ejs");
-};
-exports.getCreatePostSuccess = (req, res) => {
-  res.render("../views/partials/create-post-success.ejs");
+exports.getCommentsPost = (req, res) => {
+  res.render("../views/show-comment.ejs");
 };
 
 //Tags
