@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Posts</title>
+    <title>All Post in Blog</title>
     <link
       rel="shortcut icon"
       href="/asset-admin/img/svg/logo.svg"
@@ -73,7 +73,6 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         getPostListDataAdmin();
-        getCategoryById();
         handleSearchPost();
       });
 
@@ -93,6 +92,8 @@
           try {
             const response = await fetch(postApi);
             const data = await response.json();
+            console.log(data);
+            
 
             if (response.ok) {
               renderPosts(data);
@@ -106,63 +107,54 @@
       //Render post từ search
       const renderPosts = (posts) => {
         const postList = document.getElementById("list-post-admin");
-
         let html = "";
-        
+
         posts.forEach((post) => {
           const createdAt = new Date(post.createdAt).toLocaleDateString();
           let image = post.image ? post.image.replace("assets\\", "\\") : "";
 
-          let categoryName = "Unknown Category";
-              if (!post.category) {
-                console.warn(`Post with ID ${post._id} has no category.`);
-                return "Unknown Category";
-              } else {
-                categoryName = getCategoryById(post.category);
-              }
-
-
           html += `
-              <tr id="trow_${post._id}">
-                <td>
-                  <label class="users-table__checkbox">
-                    <div class="categories-table-img">
-                      <picture>
-                        <a href="http://localhost:8000/post/${post._id}">
-                          <img src="${image}" alt="category" />
-                        </a>
-                      </picture>
-                    </div>
-                  </label>
-                </td>
-                <td>${post.title}</td>
-                <td id="category-name-${post._id}">${
-                  categoryName || "Unknown Category"
-                  }</td>
-                <td>${createdAt}</td>
-                <td>
-                  <a href="/post/update/${post._id}" id="edit" data-id="${post._id}">
-                    <button class="btn btn-edit">Edit</button>
-                  </a> | 
-                  <a href="" id="delete" data-id="${post._id}">
-                    <button class="btn btn-delete">Delete</button>
-                  </a>
-                </td>
-              </tr>
-            `;
+            <tr id="trow_${post._id}">
+              <td>
+                <label class="users-table__checkbox">
+                  <div class="categories-table-img">
+                    <picture>
+                      <a href="http://localhost:8000/post/${post._id}">
+                        <img src="${image}" alt="category" />
+                      </a>
+                    </picture>
+                  </div>
+                </label>
+              </td>
+              <td>${post.title}</td>
+              <td>${post.category.name}</td>
+              <td>${createdAt}</td>
+              <td>
+                <a href="/admin/manage-post/comments" id="showComment" data-id="${post._id}">
+                  <button class="btn btn-show-comment">Show</button>
+                </a>
+              </td>
+              <td>
+                <a href="/post/update/${post._id}" id="edit" data-id="${post._id}">
+                  <button class="btn btn-edit">Edit</button>
+                </a> |
+                <a href="" id="delete" data-id="${post._id}">
+                  <button class="btn btn-delete">Delete</button>
+                </a>
+              </td>
+            </tr>
+          `;
         });
-
         postList.innerHTML = html;
       };
 
       //Lấy getAll post
-      const getPostListDataAdmin = async (page, limit) => {
+      const getPostListDataAdmin = async () => {
         try {
           const postApi = `http://localhost:8000/v1/posts`;
           const response = await fetch(postApi);
           const posts = await response.json();
 
-          // Chạy qua các postItem và lấy thông tin category
           const htmlPostAdmin = posts.map((item) => {
               const createdAt = new Date(item.createdAt).toLocaleDateString();
               let image = item.image
@@ -175,27 +167,32 @@
                     <label class="users-table__checkbox">
                       <div class="categories-table-img">
                         <picture>
-                          <a href="http://localhost:8000/post/${item._id}">  
-                            <img
-                              src="${image}"
-                              alt="category"
-                            />
+                          <a href="http://localhost:8000/post/${item._id}">
+                            <img src="${image}" alt="category" />
                           </a>
                         </picture>
                       </div>
                     </label>
                   </td>
                   <td>${item.title}</td>
-                  <td id="category-name-${item._id}">${item.category.name}</td>
+                  <td>${item.category.name}</td>
                   <td>${createdAt}</td>
-                  <td><a href="/admin/manage-post/comments" id="showComment" data-id="${item._id}"><button class="btn btn-show-comment">Show</button></a></td>
                   <td>
-                    <a href="/post/update/${item._id}" id="edit" data-id="${item._id}"><button class="btn btn-edit">Edit</button></a> | 
-                    <a href="" id="delete" data-id="${item._id}"><button class="btn btn-delete">Delete</button> </a>
+                    <a href="" id="showComment" data-id="${item._id}">
+                      <button class="btn btn-show-comment">Show</button>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="/post/update/${item._id}" id="edit" data-id="${item._id}">
+                      <button class="btn btn-edit">Edit</button>
+                    </a> |
+                    <a href="" id="delete" data-id="${item._id}">
+                      <button class="btn btn-delete">Delete</button>
+                    </a>
                   </td>
                 </tr>
               `;
-          });
+          }).join("");
 
           document.querySelector("#list-post-admin").innerHTML = htmlPostAdmin;
 
@@ -205,6 +202,20 @@
               const postId = e.target.closest("a").getAttribute("data-id");
               if (postId) {
                 window.location.href = `/post/update/${postId}`;
+              }
+            });
+          });
+
+          // Show comments
+          document.querySelectorAll('.btn-show-comment').forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault(); 
+              const postId = e.target.closest("a").getAttribute("data-id");
+              
+              if (postId) {
+                window.location.href = `/comments-post/${postId}`;
+              } else {
+                console.error("Post ID not found.");
               }
             });
           });
@@ -226,42 +237,7 @@
         }
       };
 
-      // Hàm lấy name category theo id
-      const getCategoryById = async (categoryId) => {
-        try {
-          console.log("Cte", categoryId);
-
-          if (
-            !categoryId ||
-            typeof categoryId !== "string" ||
-            categoryId.trim() === ""
-          ) {
-            console.error("Invalid categoryId:", categoryId);
-            return "Unknown Category1";
-          }
-
-          const postApi = `http://localhost:8000/category/${categoryId}`;
-          const response = await fetch(postApi);
-
-          // Kiểm tra API
-          const text = await response.text();
-          if (text.startsWith("<!DOCTYPE html>")) {
-            throw new Error("API returned HTML instead of JSON");
-          }
-
-          const data = JSON.parse(text);
-          if (data && data.name) {
-            return data.name;
-          } else {
-            return "Unknown Category2";
-          }
-        } catch (error) {
-          console.error("Error fetching category:", error);
-          return "Error fetching category";
-        }
-      };
-
-      //Hàm delete post
+      // Hàm gọi delete
       const deletePost = async (postId) => {
         try {
           const confirmDelete = confirm(

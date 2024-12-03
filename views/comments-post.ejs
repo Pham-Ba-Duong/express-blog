@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Posts</title>
+    <title>Comment on Post</title>
     <link
       rel="shortcut icon"
       href="/asset-admin/img/svg/logo.svg"
@@ -26,23 +26,17 @@
         <!-- ! Main -->
         <div class="container">
           <h2 class="main-title">Comments</h2>
-          <!-- <div class="d-flex justify-content-between">
-            <a href="/admin/manage-post/create">
-              <button class="button-btn">New Post</button>
-            </a>
-          </div> -->
-          <div class="users-table table-wrapper">
-            <input
+          <div class="users-table table-wrapper" >
+            <!-- <input
               id="searchInput"
               type="text"
               placeholder="Search anything..."
-            />
+            /> -->
 
-            <table class="posts-table">
+            <table class="posts-table" data-id="<%= postId %>">
               <thead>
                 <tr class="users-table-info">
                   <th>Comments</th>
-                  <th>Post</th>
                   <th>Date</th>
                   <th>Action</th>
                 </tr>
@@ -69,23 +63,43 @@
     <script src="/asset-admin/js/script.js"></script>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        getListCommentsPost();
-        // handleSearchComment();
+      const postId = "<%= postId %>";
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!postId) {
+          console.error("Post ID is not defined.");
+          return;
+        }
+        getListCommentsPost(postId);
       });
-      const getListCommentsPost = async() => {
+
+      const getListCommentsPost = async(postId) => {
         try {
-          const commentApi = `http://localhost:8000/api/v1/comment`
+          const commentApi = `/api/v1/comments-post/${postId}`;
           const response = await fetch(commentApi);
+        
+
+          if (!response.ok) throw new Error("Failed to fetch posts for this category");
+
           const comments = await response.json();
+          
+          
+          const commentsPost = Array.isArray(comments) ? comments : [];
+          
+          if (commentsPost.length === 0) {
+              document.querySelector("#list-comments-post").innerHTML = `
+                <div class="span-notifi">
+                  <span>This article has no comments yet. <br>Be the first to comment :))</span>
+                </div>
+              `;
+              return;
+          }
   
-          const htmlCommentAdmin = comments.map(
+          const htmlCommentPost = commentsPost.map(
                     (item) => { 
                       const createdAt = new Date(item.createdAt).toLocaleDateString();
                       return `
                         <tr id="trow_${item._id}">
                             <td>${item.content}</td>
-                            <td>${item.post.title}</td>
                             <td>${createdAt}</td>
                             <td>
                               <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
@@ -93,7 +107,7 @@
                         </tr>
                     `
             }).join("");
-            document.querySelector("#list-comments-post").innerHTML = htmlCommentAdmin;
+            document.querySelector("#list-comments-post").innerHTML = htmlCommentPost;
           
             // Click delete
             document.querySelectorAll(".btn-delete").forEach((button) => {
@@ -112,7 +126,8 @@
           console.log("Error fetching comment data", error);   
         }
       }
-
+      
+      //Gọi delete
       const deleteComment = async (commentId) => {
         try {        
           const confirmDelete = confirm(
@@ -136,34 +151,7 @@
         }
       };
       
-      // Seach post
-      const handleSearchComment = () => {
-        const searchInput = document.getElementById("searchInput");
-
-        searchInput.addEventListener("keyup", async (e) => {
-          const search = e.target.value;
-
-          if (search.trim() === "") {
-            getListCommentsPost();
-            return;
-          }
-
-          const commentApi = `http://localhost:8000/api/v1/comment/search?search=${search}`;
-          try {
-            const response = await fetch(commentApi);
-            const data = await response.json();
-            
-            
-
-            if (response.ok) {
-              renderPosts(data);
-            }
-          } catch (error) {
-            console.error("Error fetching search results:", error);
-          }
-        });
-      };
-
+      
     </script>
   </body>
 </html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All comment on Blog</title>
+    <link
+      rel="shortcut icon"
+      href="/asset-admin/img/svg/logo.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="/asset-admin/css/style.css" />
+  </head>
+
+  <body>
+    <div class="layer"></div>
+    <!-- ! Body -->
+    <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
+    <div class="page-flex">
+      <!-- ! Sidebar -->
+      <%- include('./partials/sidebar-admin')%>
+      <div class="main-wrapper">
+        <!-- ! Header -->
+        <header><%- include('./partials/header-admin')%></header>
+        <!-- ! Main -->
+        <div class="container">
+          <h2 class="main-title">Comments</h2>
+          <div class="users-table table-wrapper">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search anything..."
+            />
+
+            <table class="posts-table">
+              <thead>
+                <tr class="users-table-info">
+                  <th>Comments</th>
+                  <th>Post</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="list-comments-post">
+                <!-- Render các comment-item -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrapper">
+            <ul class="pagination justify-content-start">
+              
+            </ul>
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- ! Footer -->
+        <footer class="footer"><%- include('./partials/footer-admin')%></footer>
+      </div>
+    </div>
+    <script src="/asset-admin/plugins/chart.min.js"></script>
+    <script src="/asset-admin/plugins/feather.min.js"></script>
+    <script src="/asset-admin/js/script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        getListCommentsBlog();
+      });
+      const getListCommentsBlog = async() => {
+        try {
+          const commentApi = `http://localhost:8000/api/v1/comment`
+          const response = await fetch(commentApi);
+          const comments = await response.json();
+  
+          const htmlCommentAdmin = comments.map(
+                    (item) => { 
+                      const createdAt = new Date(item.createdAt).toLocaleDateString();
+                      return `
+                        <tr id="trow_${item._id}">
+                            <td>${item.content}</td>
+                            <td>${item.post.title}</td>
+                            <td>${createdAt}</td>
+                            <td>
+                              <a href="" id="delete" data-id=${item._id}><button class="btn btn-delete">Delete</button> </a>
+                            </td>
+                        </tr>
+                    `
+            }).join("");
+            document.querySelector("#list-comments-post").innerHTML = htmlCommentAdmin;
+          
+            // Click delete
+            document.querySelectorAll(".btn-delete").forEach((button) => {
+              button.addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const commentId = e.target.closest("a").getAttribute("data-id");
+                if (!commentId) {
+                  alert("Invalid category ID.");
+                  return;
+                }
+                await deleteComment(commentId);
+              });
+            });
+        } catch (error) {
+          console.log("Error fetching comment data", error);   
+        }
+      }
+
+      const deleteComment = async (commentId) => {
+        try {        
+          const confirmDelete = confirm(
+            "Are you sure you want to delete this comment?"
+          );
+          if (!confirmDelete) return;
+
+          const response = await fetch(`http://localhost:8000/api/v1/comments-post/${commentId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            document.getElementById(`trow_${commentId}`).remove();
+            alert("Category deleted successfully!");
+          } else {
+            alert("Failed to delete category.");
+          }
+        } catch (error) {
+          console.error("Error deleting category:", error);
+          alert("Error deleting category.");
+        }
+      };
+      
+      // Seach post
+      
+    </script>
+  </body>
+</html>

@@ -17,6 +17,33 @@ exports.getAllComment = async (req, res) => {
     }
 };
 
+exports.getAllCommentsPost = async (req, res) => {
+  const { postId } = req.params;
+  if (!postId) {
+      return res.status(400).json({ message: "Post ID is required" });
+  }
+
+  try {
+      // console.log("Fetching comments for Post ID:", postId);
+      const commentsFound = await PostModel.findById(postId).populate({
+          path: 'comments',
+          model: "CommentEntity",
+          select: 'userName content createdAt',
+          options: { sort: { createdAt: -1 } }
+      });
+      
+
+      if (!commentsFound) {
+          return res.status(404).json({ message: "Post not found" });
+      }
+
+      res.json(commentsFound.comments || []);
+  } catch (error) {
+      console.error("Error fetching comments:", error.message); 
+      res.status(500).json({ message: "Error fetching comments for this post", error: error.message });
+  }
+};
+
 exports.postCreateComment = async (req, res) => {
   const { content, postId } = req.body;
 
@@ -44,35 +71,6 @@ exports.postCreateComment = async (req, res) => {
   }
 };
 
-exports.getAllCommentsPost = async (req, res) => {
-  const { postId } = req.params;
-
-  if (!postId) {
-      return res.status(400).json({ message: "Post ID is required" });
-  }
-
-  try {
-      console.log("Fetching comments for Post ID:", postId);
-      const commentsFound = await PostModel.findById(postId).populate({
-          path: 'comments',
-          model: "CommentEntity",
-          select: 'userName content createdAt',
-          options: { sort: { createdAt: -1 } }
-      });
-      // console.log(commentsFound);
-      
-
-      if (!commentsFound) {
-          return res.status(404).json({ message: "Post not found" });
-      }
-
-      res.json(commentsFound.comments || []);
-  } catch (error) {
-      console.error("Error fetching comments:", error.message); 
-      res.status(500).json({ message: "Error fetching comments for this post", error: error.message });
-  }
-};
-
 exports.deleteDeleteComment = async (req, res) => {
   try {
     const { id} = req.params;
@@ -89,4 +87,11 @@ exports.deleteDeleteComment = async (req, res) => {
     console.error("Error deleting comment:", error);
     res.status(500).json({ message: "Failed to delete comment" });
   }
+};
+
+
+//Render
+exports.getCommentsPost = async (req, res) => {
+  const { postId } = req.params;
+  res.render('../views/comments-post.ejs', { postId });
 };

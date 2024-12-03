@@ -24,7 +24,7 @@ exports.getManageCreateCategory = (req, res) => {
 };
 
 exports.getCommentsPost = (req, res) => {
-  res.render("../views/show-comment.ejs");
+  res.render("../views/comments-blog.ejs");
 };
 
 //Tags

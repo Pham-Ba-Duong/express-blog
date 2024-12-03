@@ -26,8 +26,6 @@ exports.getPostsPageApi = async (req, res) => {
       .skip((page - 1) * limit) 
       .limit(limit); 
     const totalPosts = await PostModel.countDocuments(); 
-    // console.log(posts.length);
-    // console.log(totalPosts);
 
     const response = {
       posts,
@@ -35,7 +33,6 @@ exports.getPostsPageApi = async (req, res) => {
       totalPages: Math.ceil(totalPosts / limit),
       currentPage: page
     };
-    // console.log(response.currentPage);
     res.json(response);
   } catch (error) {
     res.status(500).send("Error :" + error.message);
@@ -44,22 +41,21 @@ exports.getPostsPageApi = async (req, res) => {
 
 exports.getPostsByTitleApi = async (req, res) => {
   try {
-    const postSearch = req.query.search;
+    const { search } = req.query;
 
-    if (!postSearch || postSearch.trim() === '') {
-      return res.status(400).json({ message: 'Search query is empty.' });
-    }
+    const posts = await PostModel.find({
+      title: { $regex: search, $options: "i" }, // Tìm kiếm theo từ search
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "category",
+        select: "name -_id",
+      })
+      .exec();
 
-    const regex = new RegExp(postSearch, 'i');
-    const postFound = await PostModel.find({ title: { $regex: regex } });
-
-    if (postFound.length === 0) {
-      return res.status(400).json("Cannot find posts.");
-    }
-
-    res.status(200).json(postFound);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).send("Error: " + error.message);
   }
 };
 
@@ -139,8 +135,6 @@ exports.getPostById = async (req, res) => {
 
 exports.postCreatePost = async (req, res) => {
   const { title, shortContent, txaContent , category } = req.body;
-  // console.log("Body:", req.body);
-  // console.log("File:", req.file); 
   try {
     const existingPost = await PostModel.findOne({ title, category });
     if (existingPost) {
@@ -153,7 +147,6 @@ exports.postCreatePost = async (req, res) => {
     }
 
     const imagePath = req.file.path;
-    console.log("Image:", imagePath); 
 
     const post = new PostModel({
       title: title,
@@ -193,8 +186,6 @@ exports.postUpdatePost = async (req, res) => {
     
     const { title, shortContent, txaContent , category } = req.body;
     const image = req.file ? req.file.path : null;
-    console.log("Request Body:", req.body);
-    console.log("Request Params:", image);
     
     const updatedPost = await PostModel.findByIdAndUpdate(
       req.params.id, 
@@ -206,7 +197,6 @@ exports.postUpdatePost = async (req, res) => {
         image: image,
       }, { new: true, runValidators: true });
 
-    console.log(updatedPost);
     
     if (!updatedPost) {
       return res.status(404).send('Post not found');
@@ -220,10 +210,13 @@ exports.postUpdatePost = async (req, res) => {
 
 exports.postDeletePost = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log(id);
+    const post = await PostModel.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
     
-    const post = await PostModel.findByIdAndDelete(id);
+    await CommentModel.deleteMany({ post: id });
+    await PostModel.findByIdAndDelete(id);
     
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
