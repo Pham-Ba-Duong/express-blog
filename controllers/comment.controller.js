@@ -24,7 +24,6 @@ exports.getAllCommentsPost = async (req, res) => {
   }
 
   try {
-      // console.log("Fetching comments for Post ID:", postId);
       const commentsFound = await PostModel.findById(postId).populate({
           path: 'comments',
           model: "CommentEntity",
@@ -32,11 +31,9 @@ exports.getAllCommentsPost = async (req, res) => {
           options: { sort: { createdAt: -1 } }
       });
       
-
       if (!commentsFound) {
           return res.status(404).json({ message: "Post not found" });
       }
-
       res.json(commentsFound.comments || []);
   } catch (error) {
       console.error("Error fetching comments:", error.message); 
@@ -74,14 +71,12 @@ exports.postCreateComment = async (req, res) => {
 exports.deleteDeleteComment = async (req, res) => {
   try {
     const { id} = req.params;
-    // console.log(req.params);
     
     const comment = await CommentModel.findByIdAndDelete(id);
 
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
-    
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
     console.error("Error deleting comment:", error);

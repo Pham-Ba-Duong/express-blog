@@ -12,7 +12,4 @@ route.get('/manage-category/create', AdminController.getManageCreateCategory);
 
 route.get('/manage-comments', AdminController.getCommentsPost);
 
-// route.get('/manage-tags', AdminController.getManageTags);
-
-
 module.exports = route;

@@ -7,10 +7,8 @@ const storage = multer.diskStorage({
     cb(null, 'assets/');
   },
   filename: function (req, file, cb) {
-    // const uniqueSuffix = Date.now() + path.extname(file.originalname);
     const filePath = path.join('images/images-item', file.originalname); 
     cb(null, filePath); 
-    // cb(null, file.originalname)
   }
 });
 

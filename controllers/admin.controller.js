@@ -27,7 +27,3 @@ exports.getCommentsPost = (req, res) => {
   res.render("../views/comments-blog.ejs");
 };
 
-//Tags
-exports.getManageTags = (req, res) => {
-  res.render("");
-};

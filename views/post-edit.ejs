@@ -127,7 +127,7 @@
       });
 
       document.addEventListener("DOMContentLoaded", function () {
-        getPopularCategoryDataAdmin();
+        getCategoryData();
       });
 
 
@@ -160,7 +160,6 @@
 
           const form = document.getElementById("updatePostForm");
           const formData = new FormData(form); 
-          // console.log(formData);
 
           const postId = document.getElementById("postItem").value;
 

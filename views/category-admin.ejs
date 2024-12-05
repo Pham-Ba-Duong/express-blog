@@ -62,8 +62,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-          getPopularCategoryDataAdmin();
-
+        getPopularCategoryDataAdmin();
       });
   
       const getPopularCategoryDataAdmin = async () => {
@@ -72,10 +71,6 @@
 
               const response = await fetch(categoryApi);
               const categories = await response.json();
-
-              // debugger;
-
-              // console.log(categories); 
 
               const htmlCategoryAdmin = categories.map(
                   (item) => { 

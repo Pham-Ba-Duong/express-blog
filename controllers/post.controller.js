@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'); 
 const CategoryModel = require("../models/category.model");
 const PostModel = require("../models/post.model");
+const CommentModel = require("../models/comment.model");
 
 //Api
 exports.getPostsApi = async (req, res) => {
@@ -210,7 +211,11 @@ exports.postUpdatePost = async (req, res) => {
 
 exports.postDeletePost = async (req, res) => {
   try {
+    const { id } = req.params;
+    console.log(id);
+    
     const post = await PostModel.findById(id);
+
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }

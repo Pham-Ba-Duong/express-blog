@@ -60,7 +60,6 @@ exports.postCreateCategory = async (req, res) => {
   }
 };
 
-
 exports.getUpdateCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
@@ -79,7 +78,6 @@ exports.postUpdateCategory = async (req, res) => {
   try {
     
     const { categoryName } = req.body;
-    // console.log("Request Body:", req.body);
     
     const updatedCategory = await CategoryModel.findByIdAndUpdate(
       req.params.id, 
@@ -102,7 +100,6 @@ exports.postUpdateCategory = async (req, res) => {
 exports.postDeleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     
     const category = await CategoryModel.findByIdAndDelete(id);
     

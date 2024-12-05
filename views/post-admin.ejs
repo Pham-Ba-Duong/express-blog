@@ -105,47 +105,88 @@
       };
 
       //Render post từ search
-      const renderPosts = (posts) => {
-        const postList = document.getElementById("list-post-admin");
-        let html = "";
+      const renderPosts = async (posts) => {
+        try {
+          const postList = document.getElementById("list-post-admin");
+          let html = "";
 
-        posts.forEach((post) => {
-          const createdAt = new Date(post.createdAt).toLocaleDateString();
-          let image = post.image ? post.image.replace("assets\\", "\\") : "";
+          posts.forEach((post) => {
+            const createdAt = new Date(post.createdAt).toLocaleDateString();
+            let image = post.image ? post.image.replace("assets\\", "\\") : "";
 
-          html += `
-            <tr id="trow_${post._id}">
-              <td>
-                <label class="users-table__checkbox">
-                  <div class="categories-table-img">
-                    <picture>
-                      <a href="http://localhost:8000/post/${post._id}">
-                        <img src="${image}" alt="category" />
-                      </a>
-                    </picture>
-                  </div>
-                </label>
-              </td>
-              <td>${post.title}</td>
-              <td>${post.category.name}</td>
-              <td>${createdAt}</td>
-              <td>
-                <a href="/admin/manage-post/comments" id="showComment" data-id="${post._id}">
-                  <button class="btn btn-show-comment">Show</button>
-                </a>
-              </td>
-              <td>
-                <a href="/post/update/${post._id}" id="edit" data-id="${post._id}">
-                  <button class="btn btn-edit">Edit</button>
-                </a> |
-                <a href="" id="delete" data-id="${post._id}">
-                  <button class="btn btn-delete">Delete</button>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
-        postList.innerHTML = html;
+            html += `
+              <tr id="trow_${post._id}">
+                <td>
+                  <label class="users-table__checkbox">
+                    <div class="categories-table-img">
+                      <picture>
+                        <a href="http://localhost:8000/post/${post._id}">
+                          <img src="${image}" alt="category" />
+                        </a>
+                      </picture>
+                    </div>
+                  </label>
+                </td>
+                <td>${post.title}</td>
+                <td>${post.category.name}</td>
+                <td>${createdAt}</td>
+                <td>
+                  <a href="/admin/manage-post/comments" id="showComment" data-id="${post._id}">
+                    <button class="btn btn-show-comment">Show</button>
+                  </a>
+                </td>
+                <td>
+                  <a href="/post/update/${post._id}" id="edit" data-id="${post._id}">
+                    <button class="btn btn-edit">Edit</button>
+                  </a> |
+                  <a href="" id="delete" data-id="${post._id}">
+                    <button class="btn btn-delete">Delete</button>
+                  </a>
+                </td>
+              </tr>
+            `;
+          });
+          postList.innerHTML = html;
+
+          // Click update
+          document.querySelectorAll(".btn-edit").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              const postId = e.target.closest("a").getAttribute("data-id");
+              if (postId) {
+                window.location.href = `/post/update/${postId}`;
+              }
+            });
+          });
+
+          // Show comments
+          document.querySelectorAll('.btn-show-comment').forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault(); 
+              const postId = e.target.closest("a").getAttribute("data-id");
+              
+              if (postId) {
+                window.location.href = `/comments-post/${postId}`;
+              } else {
+                console.error("Post ID not found.");
+              }
+            });
+          });
+
+          // Click delete
+          document.querySelectorAll(".btn-delete").forEach((button) => {
+            button.addEventListener("click", async (e) => {
+              const postId = e.target.closest("a").getAttribute("data-id");
+              if (!postId) {
+                alert("Invalid post ID.");
+                return;
+              }
+              await deletePost(postId);
+            });
+          });
+
+        } catch (error) {
+          console.error("Error fetching category data:", error);
+        }
       };
 
       //Lấy getAll post
@@ -244,11 +285,11 @@
             "Are you sure you want to delete this post?"
           );
           if (!confirmDelete) return;
-
+          
           const response = await fetch(`/post/delete/${postId}`, {
             method: "DELETE",
           });
-
+          
           if (response.ok) {
             document.getElementById(`trow_${postId}`).remove();
             alert("Post deleted successfully!");
